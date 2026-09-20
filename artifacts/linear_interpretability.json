@@ -1,0 +1,563 @@
+{
+  "intercept": 0.6703060300759227,
+  "total_features": 53,
+  "zeroed_features_count": 0,
+  "top_positive_drivers": [
+    {
+      "feature": "CGPA",
+      "weight": 2.664764589995545,
+      "odds_ratio": 14.364567585019465,
+      "abs_weight": 2.664764589995545,
+      "is_zeroed_by_lasso": false,
+      "direction": "Positive"
+    },
+    {
+      "feature": "HistoryOfBacklogs_No",
+      "weight": 1.425069789627734,
+      "odds_ratio": 4.158148028232874,
+      "abs_weight": 1.425069789627734,
+      "is_zeroed_by_lasso": false,
+      "direction": "Positive"
+    },
+    {
+      "feature": "Internships",
+      "weight": 1.243863608375501,
+      "odds_ratio": 3.468990426918794,
+      "abs_weight": 1.243863608375501,
+      "is_zeroed_by_lasso": false,
+      "direction": "Positive"
+    },
+    {
+      "feature": "SoftSkillsRating",
+      "weight": 1.1149057338673556,
+      "odds_ratio": 3.04928072173316,
+      "abs_weight": 1.1149057338673556,
+      "is_zeroed_by_lasso": false,
+      "direction": "Positive"
+    },
+    {
+      "feature": "Projects",
+      "weight": 1.0369100223458243,
+      "odds_ratio": 2.8204882897255477,
+      "abs_weight": 1.0369100223458243,
+      "is_zeroed_by_lasso": false,
+      "direction": "Positive"
+    },
+    {
+      "feature": "CodingTestScore",
+      "weight": 0.6113493524878412,
+      "odds_ratio": 1.842916465706846,
+      "abs_weight": 0.6113493524878412,
+      "is_zeroed_by_lasso": false,
+      "direction": "Positive"
+    },
+    {
+      "feature": "AptitudeTestScore",
+      "weight": 0.5183942298346375,
+      "odds_ratio": 1.6793288672737359,
+      "abs_weight": 0.5183942298346375,
+      "is_zeroed_by_lasso": false,
+      "direction": "Positive"
+    },
+    {
+      "feature": "Stream_CS",
+      "weight": 0.37540755065447323,
+      "odds_ratio": 1.4555845181731435,
+      "abs_weight": 0.37540755065447323,
+      "is_zeroed_by_lasso": false,
+      "direction": "Positive"
+    }
+  ],
+  "top_negative_drivers": [
+    {
+      "feature": "HistoryOfBacklogs_Yes",
+      "weight": -0.8627827465529807,
+      "odds_ratio": 0.4219861663886522,
+      "abs_weight": 0.8627827465529807,
+      "is_zeroed_by_lasso": false,
+      "direction": "Negative"
+    },
+    {
+      "feature": "City_Kolkata",
+      "weight": -0.2436382352846852,
+      "odds_ratio": 0.7837711237189737,
+      "abs_weight": 0.2436382352846852,
+      "is_zeroed_by_lasso": false,
+      "direction": "Negative"
+    },
+    {
+      "feature": "SGPA_Sem1",
+      "weight": -0.10955797158749005,
+      "odds_ratio": 0.8962302069682427,
+      "abs_weight": 0.10955797158749005,
+      "is_zeroed_by_lasso": false,
+      "direction": "Negative"
+    },
+    {
+      "feature": "SoftSkillsRating_is_missing",
+      "weight": -0.07600914251125543,
+      "odds_ratio": 0.9268077331705161,
+      "abs_weight": 0.07600914251125543,
+      "is_zeroed_by_lasso": false,
+      "direction": "Negative"
+    },
+    {
+      "feature": "CodingTestScore_is_missing",
+      "weight": -0.07195110140214156,
+      "odds_ratio": 0.9305763985797766,
+      "abs_weight": 0.07195110140214156,
+      "is_zeroed_by_lasso": false,
+      "direction": "Negative"
+    },
+    {
+      "feature": "SGPA_Sem2",
+      "weight": -0.053260643381658763,
+      "odds_ratio": 0.9481328557200336,
+      "abs_weight": 0.053260643381658763,
+      "is_zeroed_by_lasso": false,
+      "direction": "Negative"
+    },
+    {
+      "feature": "City_Jaipur",
+      "weight": -0.03757601572090075,
+      "odds_ratio": 0.963121202585577,
+      "abs_weight": 0.03757601572090075,
+      "is_zeroed_by_lasso": false,
+      "direction": "Negative"
+    },
+    {
+      "feature": "SGPA_Sem4",
+      "weight": -0.03027951704540356,
+      "odds_ratio": 0.970174315387061,
+      "abs_weight": 0.03027951704540356,
+      "is_zeroed_by_lasso": false,
+      "direction": "Negative"
+    }
+  ],
+  "all_impacts": [
+    {
+      "feature": "CGPA",
+      "weight": 2.664764589995545,
+      "odds_ratio": 14.364567585019465,
+      "abs_weight": 2.664764589995545,
+      "is_zeroed_by_lasso": false,
+      "direction": "Positive"
+    },
+    {
+      "feature": "HistoryOfBacklogs_No",
+      "weight": 1.425069789627734,
+      "odds_ratio": 4.158148028232874,
+      "abs_weight": 1.425069789627734,
+      "is_zeroed_by_lasso": false,
+      "direction": "Positive"
+    },
+    {
+      "feature": "Internships",
+      "weight": 1.243863608375501,
+      "odds_ratio": 3.468990426918794,
+      "abs_weight": 1.243863608375501,
+      "is_zeroed_by_lasso": false,
+      "direction": "Positive"
+    },
+    {
+      "feature": "SoftSkillsRating",
+      "weight": 1.1149057338673556,
+      "odds_ratio": 3.04928072173316,
+      "abs_weight": 1.1149057338673556,
+      "is_zeroed_by_lasso": false,
+      "direction": "Positive"
+    },
+    {
+      "feature": "Projects",
+      "weight": 1.0369100223458243,
+      "odds_ratio": 2.8204882897255477,
+      "abs_weight": 1.0369100223458243,
+      "is_zeroed_by_lasso": false,
+      "direction": "Positive"
+    },
+    {
+      "feature": "HistoryOfBacklogs_Yes",
+      "weight": -0.8627827465529807,
+      "odds_ratio": 0.4219861663886522,
+      "abs_weight": 0.8627827465529807,
+      "is_zeroed_by_lasso": false,
+      "direction": "Negative"
+    },
+    {
+      "feature": "CodingTestScore",
+      "weight": 0.6113493524878412,
+      "odds_ratio": 1.842916465706846,
+      "abs_weight": 0.6113493524878412,
+      "is_zeroed_by_lasso": false,
+      "direction": "Positive"
+    },
+    {
+      "feature": "AptitudeTestScore",
+      "weight": 0.5183942298346375,
+      "odds_ratio": 1.6793288672737359,
+      "abs_weight": 0.5183942298346375,
+      "is_zeroed_by_lasso": false,
+      "direction": "Positive"
+    },
+    {
+      "feature": "Stream_CS",
+      "weight": 0.37540755065447323,
+      "odds_ratio": 1.4555845181731435,
+      "abs_weight": 0.37540755065447323,
+      "is_zeroed_by_lasso": false,
+      "direction": "Positive"
+    },
+    {
+      "feature": "MockInterviewScore",
+      "weight": 0.3668208375919635,
+      "odds_ratio": 1.4431393396327874,
+      "abs_weight": 0.3668208375919635,
+      "is_zeroed_by_lasso": false,
+      "direction": "Positive"
+    },
+    {
+      "feature": "SGPA_Sem5",
+      "weight": 0.3067943954686809,
+      "odds_ratio": 1.3590615101392305,
+      "abs_weight": 0.3067943954686809,
+      "is_zeroed_by_lasso": false,
+      "direction": "Positive"
+    },
+    {
+      "feature": "Gender_Female",
+      "weight": 0.3055436904138867,
+      "odds_ratio": 1.3573627875606185,
+      "abs_weight": 0.3055436904138867,
+      "is_zeroed_by_lasso": false,
+      "direction": "Positive"
+    },
+    {
+      "feature": "Hostel_Yes",
+      "weight": 0.2900584352555514,
+      "odds_ratio": 1.3365055847890408,
+      "abs_weight": 0.2900584352555514,
+      "is_zeroed_by_lasso": false,
+      "direction": "Positive"
+    },
+    {
+      "feature": "Hostel_No",
+      "weight": 0.27222860781917707,
+      "odds_ratio": 1.3128871032644778,
+      "abs_weight": 0.27222860781917707,
+      "is_zeroed_by_lasso": false,
+      "direction": "Positive"
+    },
+    {
+      "feature": "Gender_Male",
+      "weight": 0.2567433526608295,
+      "odds_ratio": 1.292713312749556,
+      "abs_weight": 0.2567433526608295,
+      "is_zeroed_by_lasso": false,
+      "direction": "Positive"
+    },
+    {
+      "feature": "City_Kolkata",
+      "weight": -0.2436382352846852,
+      "odds_ratio": 0.7837711237189737,
+      "abs_weight": 0.2436382352846852,
+      "is_zeroed_by_lasso": false,
+      "direction": "Negative"
+    },
+    {
+      "feature": "Specialisation_AI",
+      "weight": 0.19995396549523853,
+      "odds_ratio": 1.2213465327832473,
+      "abs_weight": 0.19995396549523853,
+      "is_zeroed_by_lasso": false,
+      "direction": "Positive"
+    },
+    {
+      "feature": "City_Delhi",
+      "weight": 0.19570311727354658,
+      "odds_ratio": 1.2161657931164989,
+      "abs_weight": 0.19570311727354658,
+      "is_zeroed_by_lasso": false,
+      "direction": "Positive"
+    },
+    {
+      "feature": "SGPA_Sem8",
+      "weight": 0.1924659230243558,
+      "odds_ratio": 1.2122351936944171,
+      "abs_weight": 0.1924659230243558,
+      "is_zeroed_by_lasso": false,
+      "direction": "Positive"
+    },
+    {
+      "feature": "SGPA_Sem6",
+      "weight": 0.1796139616499559,
+      "odds_ratio": 1.196755280502851,
+      "abs_weight": 0.1796139616499559,
+      "is_zeroed_by_lasso": false,
+      "direction": "Positive"
+    },
+    {
+      "feature": "Specialisation_Embedded",
+      "weight": 0.1771803762586312,
+      "odds_ratio": 1.1938464152568193,
+      "abs_weight": 0.1771803762586312,
+      "is_zeroed_by_lasso": false,
+      "direction": "Positive"
+    },
+    {
+      "feature": "City_Bangalore",
+      "weight": 0.17577731185227582,
+      "odds_ratio": 1.1921725463924264,
+      "abs_weight": 0.17577731185227582,
+      "is_zeroed_by_lasso": false,
+      "direction": "Positive"
+    },
+    {
+      "feature": "City_Mumbai",
+      "weight": 0.16262803815893098,
+      "odds_ratio": 1.1765989583690852,
+      "abs_weight": 0.16262803815893098,
+      "is_zeroed_by_lasso": false,
+      "direction": "Positive"
+    },
+    {
+      "feature": "CollegeTier",
+      "weight": 0.1583307860739186,
+      "odds_ratio": 1.1715536642563553,
+      "abs_weight": 0.1583307860739186,
+      "is_zeroed_by_lasso": false,
+      "direction": "Positive"
+    },
+    {
+      "feature": "CGPA_Tier",
+      "weight": 0.14969381976449112,
+      "odds_ratio": 1.1614785664995166,
+      "abs_weight": 0.14969381976449112,
+      "is_zeroed_by_lasso": false,
+      "direction": "Positive"
+    },
+    {
+      "feature": "Stream_EE",
+      "weight": 0.13028332594713157,
+      "odds_ratio": 1.1391510886681875,
+      "abs_weight": 0.13028332594713157,
+      "is_zeroed_by_lasso": false,
+      "direction": "Positive"
+    },
+    {
+      "feature": "Specialisation_DataScience",
+      "weight": 0.1268832666473319,
+      "odds_ratio": 1.1352844844820031,
+      "abs_weight": 0.1268832666473319,
+      "is_zeroed_by_lasso": false,
+      "direction": "Positive"
+    },
+    {
+      "feature": "City_Hyderabad",
+      "weight": 0.12344310295019087,
+      "odds_ratio": 1.131385630206186,
+      "abs_weight": 0.12344310295019087,
+      "is_zeroed_by_lasso": false,
+      "direction": "Positive"
+    },
+    {
+      "feature": "SGPA_Sem1",
+      "weight": -0.10955797158749005,
+      "odds_ratio": 0.8962302069682427,
+      "abs_weight": 0.10955797158749005,
+      "is_zeroed_by_lasso": false,
+      "direction": "Negative"
+    },
+    {
+      "feature": "City_Chennai",
+      "weight": 0.08657107930199301,
+      "odds_ratio": 1.0904288718863624,
+      "abs_weight": 0.08657107930199301,
+      "is_zeroed_by_lasso": false,
+      "direction": "Positive"
+    },
+    {
+      "feature": "Certifications",
+      "weight": 0.08270485316805441,
+      "odds_ratio": 1.0862211664962391,
+      "abs_weight": 0.08270485316805441,
+      "is_zeroed_by_lasso": false,
+      "direction": "Positive"
+    },
+    {
+      "feature": "SoftSkillsRating_is_missing",
+      "weight": -0.07600914251125543,
+      "odds_ratio": 0.9268077331705161,
+      "abs_weight": 0.07600914251125543,
+      "is_zeroed_by_lasso": false,
+      "direction": "Negative"
+    },
+    {
+      "feature": "CodingTestScore_is_missing",
+      "weight": -0.07195110140214156,
+      "odds_ratio": 0.9305763985797766,
+      "abs_weight": 0.07195110140214156,
+      "is_zeroed_by_lasso": false,
+      "direction": "Negative"
+    },
+    {
+      "feature": "ExtraCurricular",
+      "weight": 0.06662156827550368,
+      "odds_ratio": 1.0688908994003483,
+      "abs_weight": 0.06662156827550368,
+      "is_zeroed_by_lasso": false,
+      "direction": "Positive"
+    },
+    {
+      "feature": "City_Ahmedabad",
+      "weight": 0.059098817186478476,
+      "odds_ratio": 1.060880068744254,
+      "abs_weight": 0.059098817186478476,
+      "is_zeroed_by_lasso": false,
+      "direction": "Positive"
+    },
+    {
+      "feature": "Specialisation_Networking",
+      "weight": 0.058269434673534244,
+      "odds_ratio": 1.060000558142679,
+      "abs_weight": 0.058269434673534244,
+      "is_zeroed_by_lasso": false,
+      "direction": "Positive"
+    },
+    {
+      "feature": "SGPA_Sem2",
+      "weight": -0.053260643381658763,
+      "odds_ratio": 0.9481328557200336,
+      "abs_weight": 0.053260643381658763,
+      "is_zeroed_by_lasso": false,
+      "direction": "Negative"
+    },
+    {
+      "feature": "City_Jaipur",
+      "weight": -0.03757601572090075,
+      "odds_ratio": 0.963121202585577,
+      "abs_weight": 0.03757601572090075,
+      "is_zeroed_by_lasso": false,
+      "direction": "Negative"
+    },
+    {
+      "feature": "Workshops_is_missing",
+      "weight": 0.032723657967488134,
+      "odds_ratio": 1.0332649652444545,
+      "abs_weight": 0.032723657967488134,
+      "is_zeroed_by_lasso": false,
+      "direction": "Positive"
+    },
+    {
+      "feature": "AttendancePercent",
+      "weight": 0.030818004537990308,
+      "odds_ratio": 1.0312977952872613,
+      "abs_weight": 0.030818004537990308,
+      "is_zeroed_by_lasso": false,
+      "direction": "Positive"
+    },
+    {
+      "feature": "Stream_IT",
+      "weight": 0.03063141398094715,
+      "odds_ratio": 1.0311053828088954,
+      "abs_weight": 0.03063141398094715,
+      "is_zeroed_by_lasso": false,
+      "direction": "Positive"
+    },
+    {
+      "feature": "SGPA_Sem4",
+      "weight": -0.03027951704540356,
+      "odds_ratio": 0.970174315387061,
+      "abs_weight": 0.03027951704540356,
+      "is_zeroed_by_lasso": false,
+      "direction": "Negative"
+    },
+    {
+      "feature": "City_Kochi",
+      "weight": 0.02796788318694051,
+      "odds_ratio": 1.0283626561598613,
+      "abs_weight": 0.02796788318694051,
+      "is_zeroed_by_lasso": false,
+      "direction": "Positive"
+    },
+    {
+      "feature": "SGPA_Sem3",
+      "weight": -0.027909212978455302,
+      "odds_ratio": 0.972476651052325,
+      "abs_weight": 0.027909212978455302,
+      "is_zeroed_by_lasso": false,
+      "direction": "Negative"
+    },
+    {
+      "feature": "Stream_Civil",
+      "weight": 0.024258789579667726,
+      "odds_ratio": 1.0245554278538145,
+      "abs_weight": 0.024258789579667726,
+      "is_zeroed_by_lasso": false,
+      "direction": "Positive"
+    },
+    {
+      "feature": "Publications",
+      "weight": 0.021394929046616336,
+      "odds_ratio": 1.021625441538717,
+      "abs_weight": 0.021394929046616336,
+      "is_zeroed_by_lasso": false,
+      "direction": "Positive"
+    },
+    {
+      "feature": "SGPA_Sem7",
+      "weight": 0.019561971277912725,
+      "odds_ratio": 1.0197545603958111,
+      "abs_weight": 0.019561971277912725,
+      "is_zeroed_by_lasso": false,
+      "direction": "Positive"
+    },
+    {
+      "feature": "AptitudeTestScore_is_missing",
+      "weight": -0.018926956073431974,
+      "odds_ratio": 0.9812510340536551,
+      "abs_weight": 0.018926956073431974,
+      "is_zeroed_by_lasso": false,
+      "direction": "Negative"
+    },
+    {
+      "feature": "City_Pune",
+      "weight": 0.012311944169955182,
+      "odds_ratio": 1.0123880481632381,
+      "abs_weight": 0.012311944169955182,
+      "is_zeroed_by_lasso": false,
+      "direction": "Positive"
+    },
+    {
+      "feature": "Workshops",
+      "weight": -0.009571786180475439,
+      "odds_ratio": 0.9904738775542266,
+      "abs_weight": 0.009571786180475439,
+      "is_zeroed_by_lasso": false,
+      "direction": "Negative"
+    },
+    {
+      "feature": "Stream_Mechanical",
+      "weight": 0.006301642090226683,
+      "odds_ratio": 1.0063215392096279,
+      "abs_weight": 0.006301642090226683,
+      "is_zeroed_by_lasso": false,
+      "direction": "Positive"
+    },
+    {
+      "feature": "Stream_ECE",
+      "weight": -0.004595679177720746,
+      "odds_ratio": 0.9954148647974053,
+      "abs_weight": 0.004595679177720746,
+      "is_zeroed_by_lasso": false,
+      "direction": "Negative"
+    },
+    {
+      "feature": "MockInterviewScore_is_missing",
+      "weight": -0.0021956279552590263,
+      "odds_ratio": 0.9978067806726605,
+      "abs_weight": 0.0021956279552590263,
+      "is_zeroed_by_lasso": false,
+      "direction": "Negative"
+    }
+  ]
+}

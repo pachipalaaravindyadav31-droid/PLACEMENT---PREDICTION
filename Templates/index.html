@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlacementPredict — Visual ML Graphs (M1, M2, M3)</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Local Chart.js for 100% offline & fast rendering -->
+    <script src="/static/chart.js"></script>
+</head>
+<body>
+    <div class="app-layout">
+        <!-- Left Vertical Navigation Sidebar -->
+        <aside class="sidebar-nav">
+            <div class="sidebar-brand-box">
+                <div class="brand-logo">📈</div>
+                <div>
+                    <h1 class="sidebar-title">PlacementPredict</h1>
+                    <span class="badge-tag">Visual ML Graphs</span>
+                </div>
+            </div>
+            <p class="sidebar-desc">Complete Visualizations for M1 (Lifecycle), M2 (Linear Models), and M3 (Tree Ensembles).</p>
+
+            <div class="sidebar-nav-heading">DASHBOARD NAVIGATION</div>
+            <nav class="nav-tabs-vertical">
+                <button class="tab-btn active" onclick="switchTab('graphs')">
+                    <span class="tab-icon">📈</span>
+                    <span class="tab-label">Concept Graphs (M1, M2, M3)</span>
+                    <span class="tab-badge">20</span>
+                </button>
+                <button class="tab-btn" onclick="switchTab('dataset')">
+                    <span class="tab-icon">📁</span>
+                    <span class="tab-label">Dataset Explorer</span>
+                    <span class="tab-badge">50k</span>
+                </button>
+                <button class="tab-btn" onclick="switchTab('analyzer')">
+                    <span class="tab-icon">🔬</span>
+                    <span class="tab-label">Dataset EDA Studio</span>
+                    <span class="tab-badge" style="background:#e0f2fe; color:#0284c7;">Any Data</span>
+                </button>
+                <button class="tab-btn" onclick="switchTab('predictor')">
+                    <span class="tab-icon">🎯</span>
+                    <span class="tab-label">Live Student Predictor</span>
+                    <span class="tab-badge">7 Models</span>
+                </button>
+                <button class="tab-btn" onclick="switchTab('benchmarks')">
+                    <span class="tab-icon">📊</span>
+                    <span class="tab-label">Model Benchmark Table</span>
+                </button>
+                <button class="tab-btn" onclick="switchTab('monitoring')">
+                    <span class="tab-icon">📡</span>
+                    <span class="tab-label">System Telemetry</span>
+                </button>
+            </nav>
+
+            <div class="sidebar-footer-box">
+                <div class="nav-status">
+                    <div class="status-indicator online"></div>
+                    <span class="status-text">FastAPI Server Active</span>
+                </div>
+                <div class="dataset-tag">50k Dataset Loaded</div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- TAB 1: VISUAL CONCEPT GRAPHS (M1, M2, M3) -->
+            <section id="tab-graphs" class="tab-pane active">
+                <!-- Concept Filter Toolbar -->
+                <div class="card" style="margin-bottom: 20px; padding: 14px 20px;">
+                    <div class="card-header" style="margin-bottom: 0; padding-bottom: 0; border-bottom: none; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+                        <span class="persona-label">Select Module Filter:</span>
+                        <div class="graph-filter-chips">
+                            <button class="filter-chip active" onclick="filterGraphCards('all')">All Concept Graphs (20)</button>
+                            <button class="filter-chip" onclick="filterGraphCards('m1')">M1: ML System Lifecycle (4)</button>
+                            <button class="filter-chip" onclick="filterGraphCards('m2')">M2: Linear Models at Depth (7)</button>
+                            <button class="filter-chip" onclick="filterGraphCards('m3')">M3: Tree-Based Models (9)</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="graphs-grid">
+                    <!-- ========================================== -->
+                    <!-- SECTION M1: ML SYSTEM LIFECYCLE GRAPHS     -->
+                    <!-- ========================================== -->
+
+                    <!-- Graph 1: CGPA Distribution & Placement Rate -->
+                    <div class="card graph-card" data-cat="m1">
+                        <div class="graph-card-header">
+                            <div>
+                                <h4>1. Dataset Distribution: CGPA vs Placement Rate</h4>
+                                <span class="badge-module m1">M1 Lifecycle</span>
+                            </div>
+                            <span class="graph-badge">50k Students</span>
+                        </div>
+                        <div class="canvas-container">
+                            <canvas id="chartM1Cgpa"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Graph 2: Salary by Engineering Branch -->
+                    <div class="card graph-card" data-cat="m1">
+                        <div class="graph-card-header">
+                            <div>
+                                <h4>2. Salary Package Distribution by Stream (LPA)</h4>
+                                <span class="badge-module m1">M1 Lifecycle</span>
+                            </div>
+                            <span class="graph-badge">Mean vs Max CTC</span>
+                        </div>
+                        <div class="canvas-container">
+                            <canvas id="chartM1Stream"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Graph 3: Latency vs Batch Size -->
+                    <div class="card graph-card" data-cat="m1">
+                        <div class="graph-card-header">
+                            <div>
+                                <h4>3. End-to-End Latency vs Batch Size Throughput</h4>
+                                <span class="badge-module m1">M1 Serving</span>
+                            </div>
+                            <span class="graph-badge">Single vs Batch Request</span>
+                        </div>
+                        <div class="canvas-container">
+                            <canvas id="chartM1Batch"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Graph 4: Training-Serving Boundary Drift -->
+                    <div class="card graph-card" data-cat="m1">
+                        <div class="graph-card-header">
+                            <div>
+                                <h4>4. Training-Serving Feature Distribution Monitoring</h4>
+                                <span class="badge-module m1">M1 Skew Prevention</span>
+                            </div>
+                            <span class="graph-badge">Train vs Live Serving</span>
+                        </div>
+                        <div class="canvas-container">
+                            <canvas id="chartM1Drift"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- ========================================== -->
+                    <!-- SECTION M2: LINEAR MODELS AT DEPTH GRAPHS   -->
+                    <!-- ========================================== -->
+
+                    <!-- Graph 5: Normal Eq vs Gradient Descent -->
+                    <div class="card graph-card" data-cat="m2">
+                        <div class="graph-card-header">
+                            <div>
+                                <h4>5. Normal Equations vs Gradient Descent Convergence</h4>
+                                <span class="badge-module m2">M2 Linear</span>
+                            </div>
+                            <span class="graph-badge">O(d³) vs O(nd)</span>
+                        </div>
+                        <div class="canvas-container">
+                            <canvas id="chartM2Convergence"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Graph 6: L1 Lasso vs L2 Ridge Geometry -->
+                    <div class="card graph-card" data-cat="m2">
+                        <div class="graph-card-header">
+                            <div>
+                                <h4>6. Regularisation Geometry (L1 Lasso vs L2 Ridge)</h4>
+                                <span class="badge-module m2">M2 Linear</span>
+                            </div>
+                            <span class="graph-badge">Sparsity vs Shrinkage</span>
+                        </div>
+                        <div class="canvas-container">
+                            <canvas id="chartM2Regularization"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Graph 7: Sigmoid Function & Decision Hyperplane -->
+                    <div class="card graph-card" data-cat="m2">
+                        <div class="graph-card-header">
+                            <div>
+                                <h4>7. Logistic Sigmoid Function & Decision Boundary</h4>
+                                <span class="badge-module m2">M2 Linear</span>
+                            </div>
+                            <span class="graph-badge">σ(z) = 1/(1+e⁻ᶻ)</span>
+                        </div>
+                        <div class="canvas-container">
+                            <canvas id="chartM2Sigmoid"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Graph 8: Binary Cross-Entropy Loss -->
+                    <div class="card graph-card" data-cat="m2">
+                        <div class="graph-card-header">
+                            <div>
+                                <h4>8. Binary Cross-Entropy (Log-Loss) Curves</h4>
+                                <span class="badge-module m2">M2 Linear</span>
+                            </div>
+                            <span class="graph-badge">y=1 vs y=0 Loss</span>
+                        </div>
+                        <div class="canvas-container">
+                            <canvas id="chartM2Bce"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Graph 9: Feature Scaling Contours -->
+                    <div class="card graph-card" data-cat="m2">
+                        <div class="graph-card-header">
+                            <div>
+                                <h4>9. Feature Scaling Contours (StandardScaler)</h4>
+                                <span class="badge-module m2">M2 Linear</span>
+                            </div>
+                            <span class="graph-badge">Condition Number</span>
+                        </div>
+                        <div class="canvas-container">
+                            <canvas id="chartM2Scaling"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Graph 10: Linear Coefficients & Odds Ratios -->
+                    <div class="card graph-card" data-cat="m2">
+                        <div class="graph-card-header">
+                            <div>
+                                <h4>10. Ridge Logistic Coefficients & Odds Ratios (eʷ)</h4>
+                                <span class="badge-module m2">M2 Linear</span>
+                            </div>
+                            <span class="graph-badge">Positive vs Negative</span>
+                        </div>
+                        <div class="canvas-container">
+                            <canvas id="chartM2Drivers"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Graph 11: Actual vs Predicted Salary Package -->
+                    <div class="card graph-card" data-cat="m2">
+                        <div class="graph-card-header">
+                            <div>
+                                <h4>11. Ridge Salary Regressor: Actual vs Predicted CTC</h4>
+                                <span class="badge-module m2">M2 Regression</span>
+                            </div>
+                            <span class="graph-badge">R² = 0.8793</span>
+                        </div>
+                        <div class="canvas-container">
+                            <canvas id="chartM2SalaryReg"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- ========================================== -->
+                    <!-- SECTION M3: TREE-BASED MODELS GRAPHS        -->
+                    <!-- ========================================== -->
+
+                    <!-- Graph 12: Tree Splitting Criteria -->
+                    <div class="card graph-card" data-cat="m3">
+                        <div class="graph-card-header">
+                            <div>
+                                <h4>12. Splitting Criteria (Gini vs Entropy vs Error)</h4>
+                                <span class="badge-module m3">M3 Trees</span>
+                            </div>
+                            <span class="graph-badge">Node Impurity</span>
+                        </div>
+                        <div class="canvas-container">
+                            <canvas id="chartM3Splitting"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Graph 13: CCP Pruning Bias-Variance Curve -->
+                    <div class="card graph-card" data-cat="m3">
+                        <div class="graph-card-header">
+                            <div>
+                                <h4>13. Cost-Complexity Pruning (CCP) Path (α)</h4>
+                                <span class="badge-module m3">M3 Trees</span>
+                            </div>
+                            <span class="graph-badge">Bias-Variance Tradeoff</span>
+                        </div>
+                        <div class="canvas-container">
+                            <canvas id="chartM3Ccp"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Graph 14: Random Forest OOB Error -->
+                    <div class="card graph-card" data-cat="m3">
+                        <div class="graph-card-header">
+                            <div>
+                                <h4>14. Random Forest: OOB Error vs Trees (Bagging)</h4>
+                                <span class="badge-module m3">M3 Ensembles</span>
+                            </div>
+                            <span class="graph-badge">Variance Reduction</span>
+                        </div>
+                        <div class="canvas-container">
+                            <canvas id="chartM3RfOob"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Graph 15: Gradient Boosting Loss Minimization -->
+                    <div class="card graph-card" data-cat="m3">
+                        <div class="graph-card-header">
+                            <div>
+                                <h4>15. Gradient Boosting: Loss vs Iterations</h4>
+                                <span class="badge-module m3">M3 Boosting</span>
+                            </div>
+                            <span class="graph-badge">LightGBM / XGBoost</span>
+                        </div>
+                        <div class="canvas-container">
+                            <canvas id="chartM3Boosting"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Graph 16: ROC Curves Comparison -->
+                    <div class="card graph-card" data-cat="m3">
+                        <div class="graph-card-header">
+                            <div>
+                                <h4>16. Receiver Operating Characteristic (ROC) Curves</h4>
+                                <span class="badge-module m3">M3 Evaluation</span>
+                            </div>
+                            <span class="graph-badge">AUC > 0.980</span>
+                        </div>
+                        <div class="canvas-container">
+                            <canvas id="chartM3Roc"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Graph 17: Precision-Recall Curves -->
+                    <div class="card graph-card" data-cat="m3">
+                        <div class="graph-card-header">
+                            <div>
+                                <h4>17. Precision-Recall (PR) Tradeoff Curves</h4>
+                                <span class="badge-module m3">M3 Evaluation</span>
+                            </div>
+                            <span class="graph-badge">PR-AUC Tradeoff</span>
+                        </div>
+                        <div class="canvas-container">
+                            <canvas id="chartM3Pr"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Graph 18: Gini MDI vs Permutation Importance -->
+                    <div class="card graph-card" data-cat="m3">
+                        <div class="graph-card-header">
+                            <div>
+                                <h4>18. Feature Importance: Gini MDI vs Permutation</h4>
+                                <span class="badge-module m3">M3 Interpretability</span>
+                            </div>
+                            <span class="graph-badge">Rankings Comparison</span>
+                        </div>
+                        <div class="canvas-container">
+                            <canvas id="chartM3FeatImp"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Graph 19: Model Benchmark Bars -->
+                    <div class="card graph-card" data-cat="m3">
+                        <div class="graph-card-header">
+                            <div>
+                                <h4>19. Model Comparison (Accuracy, F1, ROC-AUC)</h4>
+                                <span class="badge-module m3">M2 vs M3</span>
+                            </div>
+                            <span class="graph-badge">Test Set Metrics</span>
+                        </div>
+                        <div class="canvas-container">
+                            <canvas id="chartM3ModelBars"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Graph 20: Tabular Trees vs Neural Networks -->
+                    <div class="card graph-card" data-cat="m3">
+                        <div class="graph-card-header">
+                            <div>
+                                <h4>20. Tabular Data: Why Tree Models Win (Radar)</h4>
+                                <span class="badge-module m3">M3 Tabular</span>
+                            </div>
+                            <span class="graph-badge">Trees vs Neural Nets</span>
+                        </div>
+                        <div class="canvas-container">
+                            <canvas id="chartM3Tabular"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB: DATASET EXPLORER -->
+            <section id="tab-dataset" class="tab-pane">
+                <!-- Summary Stats Tiles -->
+                <div class="stat-tiles-grid" style="margin-top: 0; margin-bottom: 20px;">
+                    <div class="stat-tile">
+                        <span class="tile-label">Total Student Records</span>
+                        <span class="tile-val">50,000</span>
+                    </div>
+                    <div class="stat-tile">
+                        <span class="tile-label">Clean Training Set</span>
+                        <span class="tile-val" style="color: #38bdf8;">48,250</span>
+                    </div>
+                    <div class="stat-tile">
+                        <span class="tile-label">Filtered Data Anomalies</span>
+                        <span class="tile-val" style="color: #f59e0b;">1,750</span>
+                    </div>
+                    <div class="stat-tile">
+                        <span class="tile-label">Overall Placement Rate</span>
+                        <span class="tile-val text-green">65.7%</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header" style="flex-wrap: wrap; gap: 12px;">
+                        <div>
+                            <h3>📁 Student Records Explorer</h3>
+                            <p class="subtitle">Search, filter, and inspect records from the 50k placement dataset</p>
+                        </div>
+                        <div class="dataset-filters-bar">
+                            <div class="filter-item">
+                                <label>Branch:</label>
+                                <select id="filterStream" class="select-input" onchange="fetchDatasetSample(1)">
+                                    <option value="All">All Streams</option>
+                                    <option value="CS">CS</option>
+                                    <option value="IT">IT</option>
+                                    <option value="ECE">ECE</option>
+                                    <option value="EE">EE</option>
+                                    <option value="Mechanical">Mechanical</option>
+                                </select>
+                            </div>
+
+                            <div class="filter-item">
+                                <label>Status:</label>
+                                <select id="filterStatus" class="select-input" onchange="fetchDatasetSample(1)">
+                                    <option value="All">All Outcomes</option>
+                                    <option value="Placed">Placed Only (1)</option>
+                                    <option value="Not Placed">Not Placed Only (0)</option>
+                                </select>
+                            </div>
+
+                            <div class="filter-item">
+                                <label>Tier:</label>
+                                <select id="filterTier" class="select-input" onchange="fetchDatasetSample(1)">
+                                    <option value="All">All Tiers</option>
+                                    <option value="Tier1">Tier 1</option>
+                                    <option value="Tier2">Tier 2</option>
+                                    <option value="Tier3">Tier 3</option>
+                                </select>
+                            </div>
+
+                            <div class="filter-item">
+                                <label>Search:</label>
+                                <input type="text" id="filterSearch" class="select-input" placeholder="City / Domain / ID..." oninput="debounceDatasetSearch()">
+                            </div>
+
+                            <div class="filter-item">
+                                <label>Rows:</label>
+                                <select id="filterPageSize" class="select-input" onchange="fetchDatasetSample(1)">
+                                    <option value="15">15 rows</option>
+                                    <option value="25" selected>25 rows</option>
+                                    <option value="50">50 rows</option>
+                                    <option value="100">100 rows</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Scrollable Table -->
+                    <div style="overflow-x: auto; margin-top: 10px;">
+                        <table class="benchmark-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Gender</th>
+                                    <th>City</th>
+                                    <th>Tier</th>
+                                    <th>Branch</th>
+                                    <th>Domain</th>
+                                    <th>CGPA</th>
+                                    <th>Attend %</th>
+                                    <th>Interns</th>
+                                    <th>Projects</th>
+                                    <th>Coding</th>
+                                    <th>Aptitude</th>
+                                    <th>Backlogs</th>
+                                    <th>Status</th>
+                                    <th>Salary (LPA)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="datasetTableBody">
+                                <tr><td colspan="15" style="text-align: center; color: #888; padding: 20px;">Loading dataset records...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination Controls -->
+                    <div class="pagination-bar">
+                        <button id="btnPrevPage" class="btn-refresh" onclick="changeDatasetPage(-1)">← Previous</button>
+                        <span id="datasetPageInfo" class="page-info-text">Page 1 of ...</span>
+                        <button id="btnNextPage" class="btn-refresh" onclick="changeDatasetPage(1)">Next →</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 2: LIVE PREDICTOR -->
+            <section id="tab-predictor" class="tab-pane">
+                <div class="persona-bar">
+                    <span class="persona-label">Candidate Presets:</span>
+                    <button class="preset-chip" onclick="loadPreset('top_performer')">⭐ Top Achiever (9.4+ CGPA)</button>
+                    <button class="preset-chip" onclick="loadPreset('coding_ninja')">💻 Coding Specialist</button>
+                    <button class="preset-chip" onclick="loadPreset('average_student')">⚖️ Average Student</button>
+                    <button class="preset-chip" onclick="loadPreset('at_risk')">⚠️ At-Risk Candidate</button>
+                </div>
+
+                <div class="two-column-layout">
+                    <!-- Form -->
+                    <div class="card form-card">
+                        <div class="card-header">
+                            <h3>Candidate Academic & Skill Profile</h3>
+                            <div class="model-switch-group">
+                                <label for="modelSelect">Engine:</label>
+                                <select id="modelSelect" class="select-input" onchange="runPrediction()">
+                                    <optgroup label="⚡ M3: Gradient Boosted Trees">
+                                        <option value="lightgbm" selected>⚡ LightGBM (Histogram Boosted Trees)</option>
+                                        <option value="xgboost">🚀 XGBoost (Extreme Gradient Boosting)</option>
+                                    </optgroup>
+                                    <optgroup label="🌲 M3: Tree Ensembles & Decision Trees">
+                                        <option value="rf">🌲 Random Forest (Bagging Ensemble & OOB)</option>
+                                        <option value="dt">🌿 Decision Tree (Cost Complexity Pruned)</option>
+                                    </optgroup>
+                                    <optgroup label="📐 M2: Linear Regularized Models">
+                                        <option value="linear">📐 Ridge Logistic (L₂ Regularized)</option>
+                                        <option value="lasso">🎯 Lasso Logistic (L₁ Feature Selector)</option>
+                                        <option value="elasticnet">⚖️ ElasticNet Logistic (L₁ + L₂ Hybrid)</option>
+                                    </optgroup>
+                                </select>
+                            </div>
+                        </div>
+
+                        <form id="predictionForm" onsubmit="event.preventDefault(); runPrediction();">
+                            <div class="form-grid">
+                                <div class="form-section-title">🎓 Academic Performance</div>
+                                
+                                <div class="form-group">
+                                    <label>Overall CGPA (0 - 10): <span id="val-CGPA" class="val-badge">7.90</span></label>
+                                    <input type="range" id="CGPA" min="4.0" max="10.0" step="0.05" value="7.90" oninput="syncRange('CGPA')">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Attendance Rate (%): <span id="val-AttendancePercent" class="val-badge">82%</span></label>
+                                    <input type="range" id="AttendancePercent" min="40" max="100" step="1" value="82" oninput="syncRange('AttendancePercent')">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>History of Backlogs:</label>
+                                    <select id="HistoryOfBacklogs" class="select-input" onchange="runPrediction()">
+                                        <option value="No" selected>No (Clean Record)</option>
+                                        <option value="Yes">Yes (Has Backlog History)</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>College Tier:</label>
+                                    <select id="CollegeTier" class="select-input" onchange="runPrediction()">
+                                        <option value="Tier1">Tier 1 (Top Institutions)</option>
+                                        <option value="Tier2" selected>Tier 2 (Regional Major)</option>
+                                        <option value="Tier3">Tier 3</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Stream / Branch:</label>
+                                    <select id="Stream" class="select-input" onchange="runPrediction()">
+                                        <option value="CS" selected>Computer Science (CS)</option>
+                                        <option value="IT">Information Tech (IT)</option>
+                                        <option value="ECE">Electronics (ECE)</option>
+                                        <option value="EE">Electrical (EE)</option>
+                                        <option value="Mechanical">Mechanical</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Specialisation Domain:</label>
+                                    <select id="Specialisation" class="select-input" onchange="runPrediction()">
+                                        <option value="AI" selected>AI & Machine Learning</option>
+                                        <option value="DataScience">Data Science</option>
+                                        <option value="Networking">Cloud & Networking</option>
+                                        <option value="Embedded">Embedded Systems / IoT</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-section-title">💻 Technical Skills & Tests</div>
+
+                                <div class="form-group">
+                                    <label>Coding Test Score (0-100): <span id="val-CodingTestScore" class="val-badge">68</span></label>
+                                    <input type="range" id="CodingTestScore" min="0" max="100" step="1" value="68" oninput="syncRange('CodingTestScore')">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Aptitude Score (0-100): <span id="val-AptitudeTestScore" class="val-badge">72</span></label>
+                                    <input type="range" id="AptitudeTestScore" min="0" max="100" step="1" value="72" oninput="syncRange('AptitudeTestScore')">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Mock Interview Score: <span id="val-MockInterviewScore" class="val-badge">65</span></label>
+                                    <input type="range" id="MockInterviewScore" min="0" max="100" step="1" value="65" oninput="syncRange('MockInterviewScore')">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Soft Skills Rating (1 - 5): <span id="val-SoftSkillsRating" class="val-badge">3.5</span></label>
+                                    <input type="range" id="SoftSkillsRating" min="1.0" max="5.0" step="0.1" value="3.5" oninput="syncRange('SoftSkillsRating')">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Completed Internships:</label>
+                                    <input type="number" id="Internships" class="select-input" min="0" max="6" value="1" onchange="runPrediction()">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Technical Projects:</label>
+                                    <input type="number" id="Projects" class="select-input" min="0" max="10" value="2" onchange="runPrediction()">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Certifications:</label>
+                                    <input type="number" id="Certifications" class="select-input" min="0" max="8" value="2" onchange="runPrediction()">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Publications:</label>
+                                    <input type="number" id="Publications" class="select-input" min="0" max="5" value="0" onchange="runPrediction()">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>City Location:</label>
+                                    <select id="City" class="select-input" onchange="runPrediction()">
+                                        <option value="Bangalore" selected>Bangalore</option>
+                                        <option value="Hyderabad">Hyderabad</option>
+                                        <option value="Pune">Pune</option>
+                                        <option value="Delhi">Delhi</option>
+                                        <option value="Mumbai">Mumbai</option>
+                                        <option value="Chennai">Chennai</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Hostel Resident:</label>
+                                    <select id="Hostel" class="select-input" onchange="runPrediction()">
+                                        <option value="Yes" selected>Yes</option>
+                                        <option value="No">No</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Right: Results -->
+                    <div class="card result-card">
+                        <div class="card-header">
+                            <h3>Inference Verdict & Prediction</h3>
+                            <span id="latencyBadge" class="latency-badge">Latency: 1.8 ms</span>
+                        </div>
+
+                        <div id="verdictBox" class="verdict-box placed">
+                            <div class="verdict-header">
+                                <span id="verdictIcon" class="verdict-icon">🎉</span>
+                                <div>
+                                    <h2 id="verdictTitle">Likely to be Placed</h2>
+                                    <p id="verdictSubtitle">Candidate profile matches campus recruitment criteria.</p>
+                                </div>
+                            </div>
+
+                            <div class="metric-ribbon">
+                                <div class="ribbon-item">
+                                    <span class="ribbon-label">Placement Chance</span>
+                                    <span id="probValue" class="ribbon-value">88.4%</span>
+                                </div>
+                                <div class="ribbon-item">
+                                    <span class="ribbon-label">Expected Package</span>
+                                    <span id="salaryValue" class="ribbon-value">₹ 14.8 LPA</span>
+                                </div>
+                                <div class="ribbon-item">
+                                    <span class="ribbon-label">Risk Category</span>
+                                    <span id="riskValue" class="ribbon-value text-green">Low Risk</span>
+                                </div>
+                            </div>
+
+                            <div class="probability-track">
+                                <div id="probBar" class="probability-fill" style="width: 88.4%;"></div>
+                            </div>
+                        </div>
+
+                        <div class="explainability-section">
+                            <h4>🎯 Key Contributing Factors</h4>
+                            <div id="factorsList" class="factors-list"></div>
+                        </div>
+
+                        <div class="cross-model-comparison">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+                                <h4>🔄 Multi-Engine Consensus & Cross-Model Audit</h4>
+                                <span id="consensusBadge" class="badge-tag" style="background:#e0f2fe; color:#0284c7; font-weight:600;">Consensus: Computing...</span>
+                            </div>
+                            <div id="modelCompareGrid" class="model-compare-grid">
+                                <!-- Dynamically rendered for all 7 models -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 3: BENCHMARKS TABLE -->
+            <section id="tab-benchmarks" class="tab-pane">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Model Performance Summary (7,238 Unseen Test Records)</h3>
+                    </div>
+
+                    <table class="benchmark-table">
+                        <thead>
+                            <tr>
+                                <th>Model Architecture</th>
+                                <th>Module</th>
+                                <th>Accuracy</th>
+                                <th>Precision</th>
+                                <th>Recall</th>
+                                <th>F1-Score</th>
+                                <th>ROC-AUC</th>
+                                <th>Log-Loss</th>
+                            </tr>
+                        </thead>
+                        <tbody id="benchmarkBody">
+                            {% if metrics and metrics.models %}
+                            {% for key, m in metrics.models.items() %}
+                            <tr>
+                                <td><strong>{{ m.model_name }}</strong></td>
+                                <td>
+                                    {% if 'Logistic' in m.model_name %}
+                                        <span class="badge-module m2">M2 Linear</span>
+                                    {% else %}
+                                        <span class="badge-module m3">M3 Tree Ensemble</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ "%.2f"|format(m.accuracy * 100) }}%</td>
+                                <td>{{ "%.3f"|format(m.precision) }}</td>
+                                <td>{{ "%.3f"|format(m.recall) }}</td>
+                                <td><strong>{{ "%.3f"|format(m.f1_score) }}</strong></td>
+                                <td><span class="highlight-auc">{{ "%.4f"|format(m.roc_auc) }}</span></td>
+                                <td>{{ "%.3f"|format(m.log_loss) }}</td>
+                            </tr>
+                            {% endfor %}
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- TAB 4: MONITORING -->
+            <section id="tab-monitoring" class="tab-pane">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Live Prediction Telemetry & Request Monitoring</h3>
+                        <button class="btn-refresh" onclick="fetchMonitoringStats()">🔄 Refresh</button>
+                    </div>
+
+                    <div class="stat-tiles-grid">
+                        <div class="stat-tile">
+                            <span class="tile-label">Total Predictions</span>
+                            <span id="monTotalReqs" class="tile-val">0</span>
+                        </div>
+                        <div class="stat-tile">
+                            <span class="tile-label">Avg Latency</span>
+                            <span id="monAvgLatency" class="tile-val">0.0 ms</span>
+                        </div>
+                        <div class="stat-tile">
+                            <span class="tile-label">P95 Latency</span>
+                            <span id="monP95Latency" class="tile-val">0.0 ms</span>
+                        </div>
+                        <div class="stat-tile">
+                            <span class="tile-label">Placement Positive Rate</span>
+                            <span id="monPlacementRate" class="tile-val">0.0%</span>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 25px;">
+                        <h4>Recent Prediction Stream</h4>
+                        <table class="benchmark-table">
+                            <thead>
+                                <tr><th>Time</th><th>Model</th><th>Verdict</th><th>Probability</th><th>CTC</th><th>Latency</th><th>CGPA</th></tr>
+                            </thead>
+                            <tbody id="recentLogsBody">
+                                <tr><td colspan="7" style="text-align: center; color: #888;">No recent requests logged yet.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 5: UNIVERSAL DATASET ANALYZER & EDA STUDIO -->
+            <section id="tab-analyzer" class="tab-pane">
+                <!-- Upload & Configuration Card -->
+                <div class="card" style="margin-bottom: 20px;">
+                    <div class="card-header">
+                        <div>
+                            <h3>🔬 Universal Dataset Analyzer & Automated EDA Studio</h3>
+                            <p class="subtitle">Upload any custom CSV, Excel, or JSON dataset to automatically profile distributions, detect anomalies, analyze correlations, and discover feature drivers.</p>
+                        </div>
+                        <button class="btn-refresh" onclick="loadSampleDatasetAnalysis()">⚡ Analyze Built-in 50k Dataset</button>
+                    </div>
+
+                    <!-- Dropzone Area -->
+                    <div class="analyzer-upload-zone" id="analyzerDropZone">
+                        <div class="upload-icon">📁</div>
+                        <h4>Drag & Drop your dataset file here (CSV, XLSX, XLS, JSON, Parquet)</h4>
+                        <p style="font-size: 12px; color: var(--text-muted); margin: 6px 0 14px 0;">or choose a file from your computer</p>
+                        <input type="file" id="analyzerFileInput" accept=".csv,.xlsx,.xls,.json,.parquet,.txt" style="display: none;" onchange="handleFileSelected(event)">
+                        <button type="button" class="btn-primary" onclick="document.getElementById('analyzerFileInput').click()">📂 Browse File</button>
+                        <div id="selectedFileName" style="margin-top: 10px; font-weight: 600; font-size: 13px; color: var(--accent-blue);"></div>
+                    </div>
+
+                    <!-- Target Selection & Actions -->
+                    <div style="display: flex; gap: 14px; align-items: center; flex-wrap: wrap; margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--border-color);">
+                        <div style="flex: 1; min-width: 220px;">
+                            <label for="analyzerTargetCol" style="font-size: 12px; font-weight: 700; color: var(--text-main); margin-bottom: 4px; display: block;">Target Variable (Optional for Feature Driver Analysis):</label>
+                            <input type="text" id="analyzerTargetCol" class="select-input" placeholder="e.g. PlacementStatus, Salary, Churn, Price..." style="width: 100%;">
+                        </div>
+                        <div style="display: flex; gap: 10px; align-self: flex-end;">
+                            <button type="button" class="btn-primary" id="btnAnalyzeUpload" onclick="uploadAndAnalyzeDataset()">🚀 Run Deep Analysis</button>
+                            <button type="button" class="btn-secondary" onclick="toggleRawCsvModal()">📝 Paste Raw CSV</button>
+                        </div>
+                    </div>
+
+                    <!-- Raw CSV Paste Container (Collapsible) -->
+                    <div id="rawCsvContainer" style="display: none; margin-top: 16px; padding: 14px; background: #f8fafc; border-radius: 8px; border: 1px solid var(--border-color);">
+                        <label style="font-size: 12px; font-weight: 700; color: var(--text-main);">Paste Comma-Separated (CSV) or Delimited Text:</label>
+                        <textarea id="rawCsvText" rows="6" style="width: 100%; margin-top: 6px; padding: 10px; font-family: var(--font-mono); font-size: 12px; border: 1px solid var(--border-color); border-radius: 6px;" placeholder="StudentID,Gender,Stream,CGPA,PlacementStatus&#10;1,Male,CS,8.5,1&#10;2,Female,ECE,7.2,0"></textarea>
+                        <div style="margin-top: 8px; text-align: right;">
+                            <button type="button" class="btn-primary" onclick="analyzeRawPastedData()">Analyze Pasted Data</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Analysis Results Section -->
+                <div id="analyzerResultsContainer" style="display: none;">
+                    <!-- KPI Summary Ribbon -->
+                    <div class="stat-tiles-grid" style="margin-bottom: 20px;">
+                        <div class="stat-tile">
+                            <span class="tile-label">Total Records</span>
+                            <span id="edaTotalRows" class="tile-val">0</span>
+                        </div>
+                        <div class="stat-tile">
+                            <span class="tile-label">Total Features</span>
+                            <span id="edaTotalCols" class="tile-val">0</span>
+                        </div>
+                        <div class="stat-tile">
+                            <span class="tile-label">Missing Cells</span>
+                            <span id="edaMissingPct" class="tile-val">0.0%</span>
+                        </div>
+                        <div class="stat-tile">
+                            <span class="tile-label">Duplicate Rows</span>
+                            <span id="edaDuplicateRows" class="tile-val">0</span>
+                        </div>
+                        <div class="stat-tile">
+                            <span class="tile-label">Memory Footprint</span>
+                            <span id="edaMemoryMb" class="tile-val">0.0 MB</span>
+                        </div>
+                    </div>
+
+                    <!-- Data Quality Health & Alerts Banner -->
+                    <div id="analyzerAlertsBox" class="card" style="margin-bottom: 20px; padding: 16px 20px; display: none;">
+                        <h4 style="font-size: 14px; margin-bottom: 10px;">⚠️ Data Quality & Anomaly Audit</h4>
+                        <div id="analyzerAlertsList" style="display: flex; flex-direction: column; gap: 8px;"></div>
+                    </div>
+
+                    <!-- Two Column Layout: Column Profiles & Visual Charts -->
+                    <div class="two-column-layout" style="margin-bottom: 20px;">
+                        <!-- Left Column: Feature Deep Dive Table -->
+                        <div class="card" style="flex: 1.2;">
+                            <div class="card-header" style="flex-direction: column; align-items: flex-start; gap: 10px;">
+                                <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+                                    <h3>📊 Feature Column Profiles</h3>
+                                    <span id="edaColCountBadge" class="badge-tag">0 Features</span>
+                                </div>
+                                <div style="display: flex; gap: 8px; width: 100%; flex-wrap: wrap;">
+                                    <input type="text" id="edaColumnSearch" class="select-input" placeholder="Search feature name..." style="flex: 1; padding: 6px 10px; font-size: 12px;" oninput="filterEdaColumns()">
+                                    <select id="edaTypeFilter" class="select-input" style="padding: 6px 10px; font-size: 12px;" onchange="filterEdaColumns()">
+                                        <option value="all">All Types</option>
+                                        <option value="numerical">Numerical</option>
+                                        <option value="categorical">Categorical</option>
+                                        <option value="boolean">Boolean</option>
+                                        <option value="datetime">Datetime</option>
+                                        <option value="id_like">ID / Text</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div style="overflow-x: auto; max-height: 520px;">
+                                <table class="benchmark-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Feature Name</th>
+                                            <th>Type</th>
+                                            <th>Missing</th>
+                                            <th>Unique</th>
+                                            <th>Summary Stats</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="edaColumnsTableBody">
+                                        <tr><td colspan="6" style="text-align: center; color: #888; padding: 20px;">No dataset loaded.</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Right Column: Interactive Charts Inspector -->
+                        <div style="flex: 1; display: flex; flex-direction: column; gap: 20px;">
+                            <!-- Active Column Distribution Chart -->
+                            <div class="card">
+                                <div class="card-header">
+                                    <div>
+                                        <h4 id="edaActiveChartTitle">📈 Column Distribution</h4>
+                                        <span id="edaActiveChartSubtitle" class="badge-tag" style="background:#f1f5f9; color:#475569;">Select a column to inspect</span>
+                                    </div>
+                                </div>
+                                <div class="canvas-container" style="height: 230px;">
+                                    <canvas id="chartAnalyzerCol"></canvas>
+                                </div>
+                            </div>
+
+                            <!-- Missing Values Distribution Chart -->
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4>📉 Missing Values by Feature (%)</h4>
+                                    <span class="badge-tag">Sparsity Check</span>
+                                </div>
+                                <div class="canvas-container" style="height: 210px;">
+                                    <canvas id="chartAnalyzerMissing"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Target Association & Correlation Matrix Section -->
+                    <div class="two-column-layout" style="margin-bottom: 20px;">
+                        <!-- Target Drivers / Relationships -->
+                        <div class="card" id="edaTargetCard" style="display: none;">
+                            <div class="card-header">
+                                <div>
+                                    <h3 id="edaTargetTitle">🎯 Target Variable Analysis</h3>
+                                    <span id="edaTargetTypeBadge" class="badge-module m3">Target Driver</span>
+                                </div>
+                            </div>
+                            <div id="edaTargetContent"></div>
+                            <div class="canvas-container" style="height: 240px; margin-top: 14px;">
+                                <canvas id="chartAnalyzerTarget"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Top Correlations Pairs -->
+                        <div class="card" id="edaCorrCard" style="display: none;">
+                            <div class="card-header">
+                                <h3>🔗 Feature Correlation & Multi-Collinearity</h3>
+                                <span class="badge-tag">Pearson r</span>
+                            </div>
+                            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">Notable linear relationships between continuous numerical variables.</p>
+                            <table class="benchmark-table">
+                                <thead>
+                                    <tr><th>Feature Pair</th><th>Correlation (r)</th><th>Relationship</th></tr>
+                                </thead>
+                                <tbody id="edaCorrPairsBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Data Preview Table -->
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <h3>📋 Dataset Sample Preview (First 25 Rows)</h3>
+                                <p class="subtitle">Quick inspection of parsed rows and column formats.</p>
+                            </div>
+                        </div>
+                        <div style="overflow-x: auto; max-height: 400px;" id="analyzerPreviewTableContainer">
+                            <table class="benchmark-table" id="analyzerPreviewTable">
+                                <thead id="analyzerPreviewThead"></thead>
+                                <tbody id="analyzerPreviewTbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>

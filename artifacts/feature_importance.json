@@ -1,0 +1,258 @@
+{
+  "mdi_importance": [
+    {
+      "feature": "SoftSkillsRating",
+      "importance": 484.0
+    },
+    {
+      "feature": "CodingTestScore",
+      "importance": 399.0
+    },
+    {
+      "feature": "HistoryOfBacklogs_No",
+      "importance": 309.0
+    },
+    {
+      "feature": "CGPA",
+      "importance": 306.0
+    },
+    {
+      "feature": "Internships",
+      "importance": 299.0
+    },
+    {
+      "feature": "AptitudeTestScore",
+      "importance": 297.0
+    },
+    {
+      "feature": "MockInterviewScore",
+      "importance": 263.0
+    },
+    {
+      "feature": "Projects",
+      "importance": 254.0
+    },
+    {
+      "feature": "SGPA_Sem7",
+      "importance": 205.0
+    },
+    {
+      "feature": "SGPA_Sem8",
+      "importance": 189.0
+    },
+    {
+      "feature": "AttendancePercent",
+      "importance": 189.0
+    },
+    {
+      "feature": "SGPA_Sem6",
+      "importance": 180.0
+    },
+    {
+      "feature": "SGPA_Sem2",
+      "importance": 177.0
+    },
+    {
+      "feature": "SGPA_Sem4",
+      "importance": 163.0
+    },
+    {
+      "feature": "SGPA_Sem5",
+      "importance": 163.0
+    },
+    {
+      "feature": "SGPA_Sem3",
+      "importance": 115.0
+    },
+    {
+      "feature": "SGPA_Sem1",
+      "importance": 114.0
+    },
+    {
+      "feature": "CollegeTier",
+      "importance": 49.0
+    },
+    {
+      "feature": "Stream_CS",
+      "importance": 41.0
+    },
+    {
+      "feature": "City_Kolkata",
+      "importance": 26.0
+    },
+    {
+      "feature": "Certifications",
+      "importance": 21.0
+    },
+    {
+      "feature": "ExtraCurricular",
+      "importance": 20.0
+    },
+    {
+      "feature": "CodingTestScore_is_missing",
+      "importance": 20.0
+    },
+    {
+      "feature": "Publications",
+      "importance": 17.0
+    },
+    {
+      "feature": "Specialisation_Networking",
+      "importance": 16.0
+    },
+    {
+      "feature": "Workshops",
+      "importance": 15.0
+    },
+    {
+      "feature": "SoftSkillsRating_is_missing",
+      "importance": 14.0
+    },
+    {
+      "feature": "Specialisation_AI",
+      "importance": 14.0
+    },
+    {
+      "feature": "City_Pune",
+      "importance": 13.0
+    },
+    {
+      "feature": "Specialisation_Embedded",
+      "importance": 13.0
+    },
+    {
+      "feature": "City_Hyderabad",
+      "importance": 12.0
+    },
+    {
+      "feature": "Stream_ECE",
+      "importance": 12.0
+    },
+    {
+      "feature": "City_Ahmedabad",
+      "importance": 11.0
+    },
+    {
+      "feature": "City_Jaipur",
+      "importance": 9.0
+    },
+    {
+      "feature": "Gender_Female",
+      "importance": 8.0
+    },
+    {
+      "feature": "Hostel_No",
+      "importance": 8.0
+    },
+    {
+      "feature": "MockInterviewScore_is_missing",
+      "importance": 7.0
+    },
+    {
+      "feature": "Stream_Mechanical",
+      "importance": 7.0
+    },
+    {
+      "feature": "HistoryOfBacklogs_Yes",
+      "importance": 7.0
+    },
+    {
+      "feature": "City_Delhi",
+      "importance": 6.0
+    },
+    {
+      "feature": "Workshops_is_missing",
+      "importance": 5.0
+    },
+    {
+      "feature": "Stream_Civil",
+      "importance": 4.0
+    },
+    {
+      "feature": "Specialisation_DataScience",
+      "importance": 4.0
+    },
+    {
+      "feature": "Gender_Male",
+      "importance": 3.0
+    },
+    {
+      "feature": "City_Chennai",
+      "importance": 3.0
+    },
+    {
+      "feature": "AptitudeTestScore_is_missing",
+      "importance": 2.0
+    },
+    {
+      "feature": "City_Bangalore",
+      "importance": 2.0
+    },
+    {
+      "feature": "City_Kochi",
+      "importance": 2.0
+    },
+    {
+      "feature": "Stream_IT",
+      "importance": 2.0
+    },
+    {
+      "feature": "Stream_EE",
+      "importance": 1.0
+    },
+    {
+      "feature": "City_Mumbai",
+      "importance": 0.0
+    },
+    {
+      "feature": "Hostel_Yes",
+      "importance": 0.0
+    },
+    {
+      "feature": "CGPA_Tier",
+      "importance": 0.0
+    }
+  ],
+  "top_features": [
+    {
+      "feature": "SoftSkillsRating",
+      "importance": 484.0
+    },
+    {
+      "feature": "CodingTestScore",
+      "importance": 399.0
+    },
+    {
+      "feature": "HistoryOfBacklogs_No",
+      "importance": 309.0
+    },
+    {
+      "feature": "CGPA",
+      "importance": 306.0
+    },
+    {
+      "feature": "Internships",
+      "importance": 299.0
+    },
+    {
+      "feature": "AptitudeTestScore",
+      "importance": 297.0
+    },
+    {
+      "feature": "MockInterviewScore",
+      "importance": 263.0
+    },
+    {
+      "feature": "Projects",
+      "importance": 254.0
+    },
+    {
+      "feature": "SGPA_Sem7",
+      "importance": 205.0
+    },
+    {
+      "feature": "SGPA_Sem8",
+      "importance": 189.0
+    }
+  ]
+}

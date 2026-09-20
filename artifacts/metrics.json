@@ -1,0 +1,138 @@
+{
+  "models": {
+    "ridge_logistic": {
+      "model_name": "Ridge (L2) Logistic Regression",
+      "accuracy": 0.9233213594915722,
+      "balanced_accuracy": 0.9105412629468761,
+      "precision": 0.9333608417577883,
+      "recall": 0.9512195121951219,
+      "f1_score": 0.9422055607622618,
+      "roc_auc": 0.9809627636899894,
+      "log_loss": 0.16411254343198403,
+      "confusion_matrix": {
+        "true_negatives": 2159,
+        "false_positives": 323,
+        "false_negatives": 232,
+        "true_positives": 4524
+      },
+      "train_time_sec": 0.454
+    },
+    "lasso_logistic": {
+      "model_name": "Lasso (L1) Logistic Regression",
+      "accuracy": 0.9238739983420835,
+      "balanced_accuracy": 0.9112507446380974,
+      "precision": 0.9339525283797729,
+      "recall": 0.9514297729184188,
+      "f1_score": 0.9426101447765858,
+      "roc_auc": 0.9809784358228699,
+      "log_loss": 0.16401635056128439,
+      "confusion_matrix": {
+        "true_negatives": 2162,
+        "false_positives": 320,
+        "false_negatives": 231,
+        "true_positives": 4525
+      }
+    },
+    "elasticnet_logistic": {
+      "model_name": "ElasticNet Logistic Regression",
+      "accuracy": 0.9237358386294556,
+      "balanced_accuracy": 0.9110492941949064,
+      "precision": 0.933759801898473,
+      "recall": 0.9514297729184188,
+      "f1_score": 0.9425119766715268,
+      "roc_auc": 0.9809850435329494,
+      "log_loss": 0.16400782102731487,
+      "confusion_matrix": {
+        "true_negatives": 2161,
+        "false_positives": 321,
+        "false_negatives": 231,
+        "true_positives": 4525
+      }
+    },
+    "decision_tree": {
+      "model_name": "Decision Tree (Pruned)",
+      "accuracy": 0.9164133738601824,
+      "balanced_accuracy": 0.9051884247829114,
+      "precision": 0.932485934569702,
+      "recall": 0.9409167367535745,
+      "f1_score": 0.9366823652537938,
+      "roc_auc": 0.9720330365172556,
+      "log_loss": 0.23957380964460287,
+      "confusion_matrix": {
+        "true_negatives": 2158,
+        "false_positives": 324,
+        "false_negatives": 281,
+        "true_positives": 4475
+      }
+    },
+    "random_forest": {
+      "model_name": "Random Forest",
+      "accuracy": 0.9223542415031777,
+      "balanced_accuracy": 0.9063378274798057,
+      "precision": 0.926913680781759,
+      "recall": 0.9573170731707317,
+      "f1_score": 0.9418700868845676,
+      "roc_auc": 0.9781598239028321,
+      "log_loss": 0.1794930062339954,
+      "confusion_matrix": {
+        "true_negatives": 2123,
+        "false_positives": 359,
+        "false_negatives": 203,
+        "true_positives": 4553
+      },
+      "train_time_sec": 1.211,
+      "oob_score": 0.9201
+    },
+    "lightgbm": {
+      "model_name": "LightGBM",
+      "accuracy": 0.9211108040895275,
+      "balanced_accuracy": 0.9080886165081608,
+      "precision": 0.9317103362904889,
+      "recall": 0.9495374264087468,
+      "f1_score": 0.9405394147662189,
+      "roc_auc": 0.9792223097979125,
+      "log_loss": 0.1724695189834892,
+      "confusion_matrix": {
+        "true_negatives": 2151,
+        "false_positives": 331,
+        "false_negatives": 240,
+        "true_positives": 4516
+      },
+      "train_time_sec": 0.438
+    },
+    "xgboost": {
+      "model_name": "XGBoost",
+      "accuracy": 0.9218016026526665,
+      "balanced_accuracy": 0.9081326679086903,
+      "precision": 0.9308926367749897,
+      "recall": 0.9516400336417157,
+      "f1_score": 0.9411520066541901,
+      "roc_auc": 0.9798428415457568,
+      "log_loss": 0.16945971548557281,
+      "confusion_matrix": {
+        "true_negatives": 2146,
+        "false_positives": 336,
+        "false_negatives": 230,
+        "true_positives": 4526
+      },
+      "train_time_sec": 2.79
+    }
+  },
+  "salary_regressor": {
+    "model_name": "Ridge Salary Regressor",
+    "mae_lpa": 2.013,
+    "rmse_lpa": 2.375,
+    "r2_score": 0.8793,
+    "sample_count": 4768
+  },
+  "dataset_stats": {
+    "total_records": 50000,
+    "clean_records": 48250,
+    "anomalies_count": 1750,
+    "train_count": 33775,
+    "val_count": 7237,
+    "test_count": 7238,
+    "placement_rate": 0.6571191709844559,
+    "avg_salary_placed": 14.496515170630165
+  }
+}
