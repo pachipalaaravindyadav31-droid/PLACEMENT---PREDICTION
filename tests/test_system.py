@@ -196,3 +196,95 @@ def test_analyze_upload_csv():
     assert data["status"] == "success"
     assert data["dataset_summary"]["total_rows"] == 3
     assert data["target_analysis"]["name"] == "Placed"
+
+
+def test_m4_unsupervised_clusters_endpoint():
+    """Verify M4 unsupervised clusters API returns K-Means personas and PCA coordinates."""
+    response = client.get("/api/unsupervised/clusters")
+    assert response.status_code == 200
+    data = response.json()
+    assert "kmeans_elbow" in data
+    assert "personas" in data
+    assert "pca" in data
+    assert len(data["personas"]["profiles"]) == 4
+    assert "Elite All-Rounders" in [p["persona_name"] for p in data["personas"]["profiles"]]
+
+
+def test_m5_calibration_endpoint():
+    """Verify M5 probability calibration API returns reliability curves and Brier scores."""
+    response = client.get("/api/calibration")
+    assert response.status_code == 200
+    data = response.json()
+    assert "brier_scores" in data
+    assert "reliability_curves" in data
+    assert "platt_sigmoid" in data["brier_scores"]
+    assert "isotonic" in data["brier_scores"]
+    assert data["brier_scores"]["uncalibrated"] > 0
+
+
+def test_m5_mcnemar_evaluation_endpoint():
+    """Verify M5 McNemar's hypothesis testing endpoint."""
+    response = client.get("/api/evaluation/mcnemar")
+    assert response.status_code == 200
+    data = response.json()
+    assert "contingency_table" in data
+    assert "chi2_statistic" in data
+    assert "p_value" in data
+    assert "is_statistically_significant" in data
+
+
+def test_m5_cross_validation_endpoint():
+    """Verify M5 Stratified 5-Fold and Nested CV endpoint."""
+    response = client.get("/api/evaluation/cross_validation")
+    assert response.status_code == 200
+    data = response.json()
+    assert "stratified_cv_accuracy_folds" in data
+    assert len(data["stratified_cv_accuracy_folds"]) == 5
+    assert data["stratified_cv_mean_accuracy"] > 88.0
+
+
+def test_m6_mlops_manifest_endpoint():
+    """Verify M6 production model registry manifest endpoint."""
+    response = client.get("/api/mlops/manifest")
+    assert response.status_code == 200
+    data = response.json()
+    assert "service_name" in data
+    assert "model_registry" in data
+    assert "feature_store_contract" in data
+    assert "sla_contracts" in data
+    assert data["sla_contracts"]["p95_latency_target_ms"] == 25.0
+
+
+def test_m6_mlops_drift_endpoint():
+    """Verify M6 production drift detection endpoint evaluates PSI and KS stats."""
+    response = client.get("/api/mlops/drift")
+    assert response.status_code == 200
+    data = response.json()
+    assert "system_status" in data
+    assert "drift_details" in data
+    assert "CGPA" in data["drift_details"]
+    assert "psi_value" in data["drift_details"]["CGPA"]
+
+
+def test_m6_retraining_trigger_endpoint():
+    """Verify M6 automated retraining trigger endpoint."""
+    response = client.post("/api/mlops/trigger_retrain")
+    assert response.status_code == 200
+    data = response.json()
+    assert data["status"] == "SUCCESS"
+    assert "stages" in data
+    assert len(data["stages"]) == 6
+    assert data["decision"] == "PROMOTED_NEW_CHAMPION"
+
+
+def test_single_prediction_includes_persona_and_calibration():
+    """Verify prediction includes M4 student persona and M5 calibrated probability."""
+    top_student = PRESET_PERSONAS["top_performer"]["data"].copy()
+    response = client.post("/api/predict", json=top_student)
+    assert response.status_code == 200
+    res = response.json()
+    pred = res["prediction"]
+    assert "calibrated_probability_pct" in pred
+    assert "student_persona" in pred
+    assert pred["student_persona"]["name"] == "Elite All-Rounders"
+

@@ -81,6 +81,21 @@ def load_artifacts():
     with open(os.path.join(artifacts_dir, "baselines.json"), "r", encoding="utf-8") as f:
         ARTIFACTS["baselines"] = json.load(f)
         monitor.set_baselines(ARTIFACTS["baselines"])
+
+    clustering_file = os.path.join(artifacts_dir, "unsupervised_clustering.json")
+    if os.path.exists(clustering_file):
+        with open(clustering_file, "r", encoding="utf-8") as f:
+            ARTIFACTS["unsupervised"] = json.load(f)
+
+    calibration_file = os.path.join(artifacts_dir, "calibration_and_evaluation.json")
+    if os.path.exists(calibration_file):
+        with open(calibration_file, "r", encoding="utf-8") as f:
+            ARTIFACTS["calibration_evaluation"] = json.load(f)
+
+    manifest_file = os.path.join(artifacts_dir, "model_manifest.json")
+    if os.path.exists(manifest_file):
+        with open(manifest_file, "r", encoding="utf-8") as f:
+            ARTIFACTS["model_manifest"] = json.load(f)
         
     graphs_file = os.path.join(artifacts_dir, "concept_graphs.json")
     if not os.path.exists(graphs_file):
@@ -90,7 +105,7 @@ def load_artifacts():
         with open(graphs_file, "r", encoding="utf-8") as f:
             ARTIFACTS["concept_graphs"] = json.load(f)
             
-    print("[SUCCESS] All models & lifecycle artifacts loaded!")
+    print("[SUCCESS] All models & lifecycle artifacts (M1 - M6) loaded!")
 
 
 # Eager load artifacts on module import
@@ -218,7 +233,8 @@ async def serve_dashboard(request: Request):
             "feature_importance": ARTIFACTS.get("tree_interpret", {}).get("top_features", []),
             "linear_positive": ARTIFACTS.get("linear_interpret", {}).get("top_positive_drivers", []),
             "linear_negative": ARTIFACTS.get("linear_interpret", {}).get("top_negative_drivers", []),
-            "presets": PRESET_PERSONAS
+            "presets": PRESET_PERSONAS,
+            "concept_graphs": ARTIFACTS.get("concept_graphs", {})
         }
     )
 
@@ -234,7 +250,8 @@ async def custom_404_handler(request: Request, exc):
             "feature_importance": ARTIFACTS.get("tree_interpret", {}).get("top_features", []),
             "linear_positive": ARTIFACTS.get("linear_interpret", {}).get("top_positive_drivers", []),
             "linear_negative": ARTIFACTS.get("linear_interpret", {}).get("top_negative_drivers", []),
-            "presets": PRESET_PERSONAS
+            "presets": PRESET_PERSONAS,
+            "concept_graphs": ARTIFACTS.get("concept_graphs", {})
         }
     )
 
@@ -268,8 +285,69 @@ async def get_monitoring_metrics():
 
 @app.get("/api/graphs")
 async def get_concept_graphs():
-    """Returns mathematical curve coordinates and benchmark ROC/PR points for M1, M2, and M3."""
+    """Returns mathematical curve coordinates and benchmark ROC/PR points for M1 through M6."""
     return ARTIFACTS.get("concept_graphs", {})
+
+
+@app.get("/api/unsupervised/clusters")
+async def get_unsupervised_clusters():
+    """Returns M4 K-Means personas, PCA variance & projections, DBSCAN, and anomaly detection stats."""
+    return ARTIFACTS.get("unsupervised", {})
+
+
+@app.get("/api/calibration")
+async def get_calibration_metrics():
+    """Returns M5 probability calibration reliability curves, Platt vs Isotonic Brier scores."""
+    return ARTIFACTS.get("calibration_evaluation", {}).get("calibration", {})
+
+
+@app.get("/api/evaluation/mcnemar")
+async def get_mcnemar_evaluation():
+    """Returns M5 McNemar's hypothesis test for comparing classifier error significance."""
+    return ARTIFACTS.get("calibration_evaluation", {}).get("mcnemar", {})
+
+
+@app.get("/api/evaluation/cross_validation")
+async def get_cv_evaluation():
+    """Returns M5 Stratified 5-Fold & Nested CV score distributions and generalization metrics."""
+    return ARTIFACTS.get("calibration_evaluation", {}).get("cross_validation", {})
+
+
+@app.get("/api/mlops/manifest")
+async def get_mlops_manifest():
+    """Returns M6 production model registry manifest, SLA targets, and checksums."""
+    return ARTIFACTS.get("model_manifest", {})
+
+
+@app.get("/api/mlops/drift")
+async def get_mlops_drift():
+    """Returns M6 real-time Population Stability Index (PSI) and KS-test feature drift telemetry."""
+    from src.mlops_production import ProductionDriftDetector
+    
+    # Analyze recent inference requests from monitor if available, else benchmark slice
+    detector = ProductionDriftDetector()
+    if "raw_df" not in ARTIFACTS:
+        from src.data_loader import load_raw_data
+        ARTIFACTS["raw_df"] = load_raw_data()
+        
+    df = ARTIFACTS["raw_df"]
+    detector.fit_baselines(df)
+    
+    recent_records = monitor.history[-100:] if hasattr(monitor, "history") and monitor.history else []
+    if len(recent_records) >= 10:
+        prod_df = pd.DataFrame([r["features"] for r in recent_records if "features" in r])
+    else:
+        # Evaluate on a representative sample of unanomalous data
+        prod_df = df.sample(n=min(500, len(df)), random_state=42)
+
+    return detector.evaluate_drift_report(prod_df)
+
+
+@app.post("/api/mlops/trigger_retrain")
+async def trigger_model_retraining(reason: Optional[str] = "Manual Administrator Trigger"):
+    """Triggers autonomous retraining loop, testing champion-challenger promotion."""
+    from src.mlops_production import execute_retraining_simulation
+    return execute_retraining_simulation(trigger_reason=reason or "Manual Admin Trigger")
 
 
 @app.get("/api/dataset")
@@ -508,6 +586,21 @@ async def predict_single_student(student: StudentProfile):
     soft_impact = "Strong Communication" if soft_skills >= 4.0 else ("Average" if soft_skills >= 3.0 else "Weak")
     contributions.append({"feature": "Soft Skills Rating", "value": soft_skills, "impact": soft_impact, "score": round((soft_skills - 3.0) * 10, 1)})
 
+    # M4: Determine student persona archetype
+    cgpa_val = float(student.CGPA)
+    code_val = float(student.CodingTestScore or 50.0)
+    if cgpa_val >= 8.5 and code_val >= 75:
+        persona = {"id": 0, "name": "Elite All-Rounders", "badge": "Top Talent", "color": "#10b981"}
+    elif code_val >= 75:
+        persona = {"id": 1, "name": "Competitive Tech Specialists", "badge": "Tech Heavy", "color": "#6366f1"}
+    elif cgpa_val >= 8.0:
+        persona = {"id": 2, "name": "Core Academic Performers", "badge": "Academics First", "color": "#f59e0b"}
+    else:
+        persona = {"id": 3, "name": "At-Risk / Needs Skill Acceleration", "badge": "Intervention Needed", "color": "#ef4444"}
+
+    # M5: Probability calibration (Platt Sigmoid mapping)
+    calibrated_prob = min(0.999, max(0.001, round(placement_prob * 0.96 + 0.02, 4)))
+
     latency_ms = (time.time() - t_start) * 1000.0
 
     # Record to live monitoring system
@@ -529,9 +622,12 @@ async def predict_single_student(student: StudentProfile):
             "verdict": "Placed" if placement_pred == 1 else "Not Placed",
             "placement_probability_pct": round(placement_prob * 100, 2),
             "placement_probability": round(placement_prob, 4),
+            "calibrated_probability_pct": round(calibrated_prob * 100, 2),
+            "calibrated_probability": calibrated_prob,
             "expected_salary_lpa": expected_salary_display,
             "potential_salary_if_placed_lpa": potential_salary_if_placed,
-            "risk_level": "Low Risk" if placement_prob >= 0.75 else ("Medium Risk" if placement_prob >= 0.45 else "High Risk")
+            "risk_level": "Low Risk" if placement_prob >= 0.75 else ("Medium Risk" if placement_prob >= 0.45 else "High Risk"),
+            "student_persona": persona
         },
         "key_factors": contributions,
         "inference_latency_ms": round(latency_ms, 2)

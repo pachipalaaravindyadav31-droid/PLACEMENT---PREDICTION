@@ -15,7 +15,7 @@
         "false_negatives": 232,
         "true_positives": 4524
       },
-      "train_time_sec": 0.454
+      "train_time_sec": 0.291
     },
     "lasso_logistic": {
       "model_name": "Lasso (L1) Logistic Regression",
@@ -73,14 +73,14 @@
       "recall": 0.9573170731707317,
       "f1_score": 0.9418700868845676,
       "roc_auc": 0.9781598239028321,
-      "log_loss": 0.1794930062339954,
+      "log_loss": 0.17949300623399542,
       "confusion_matrix": {
         "true_negatives": 2123,
         "false_positives": 359,
         "false_negatives": 203,
         "true_positives": 4553
       },
-      "train_time_sec": 1.211,
+      "train_time_sec": 0.984,
       "oob_score": 0.9201
     },
     "lightgbm": {
@@ -98,7 +98,7 @@
         "false_negatives": 240,
         "true_positives": 4516
       },
-      "train_time_sec": 0.438
+      "train_time_sec": 0.381
     },
     "xgboost": {
       "model_name": "XGBoost",
@@ -115,7 +115,7 @@
         "false_negatives": 230,
         "true_positives": 4526
       },
-      "train_time_sec": 2.79
+      "train_time_sec": 2.409
     }
   },
   "salary_regressor": {

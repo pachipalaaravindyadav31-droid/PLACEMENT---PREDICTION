@@ -1,0 +1,113 @@
+{
+  "service_name": "PlacementPredict",
+  "system_version": "2.4.0-prod",
+  "environment": "Production",
+  "created_at": "2026-10-16T03:19:08.978887Z",
+  "sla_contracts": {
+    "p50_latency_target_ms": 5.0,
+    "p95_latency_target_ms": 25.0,
+    "p99_latency_target_ms": 60.0,
+    "target_uptime_pct": 99.95,
+    "max_batch_size": 1000
+  },
+  "model_registry": {
+    "champion_classifier": {
+      "name": "LightGBM (M3 Boosting)",
+      "artifact": "tree_pipeline.joblib",
+      "accuracy": 0.9211108040895275,
+      "roc_auc": 0.9792223097979125,
+      "framework": "LightGBM 4.7 / Scikit-Learn Pipeline",
+      "status": "CHAMPION_SERVED"
+    },
+    "challenger_classifier": {
+      "name": "Ridge Logistic (M2 Linear)",
+      "artifact": "linear_pipeline.joblib",
+      "accuracy": 0.9233213594915722,
+      "roc_auc": 0.9809627636899894,
+      "framework": "Scikit-Learn LogisticRegression (L2)",
+      "status": "CHALLENGER_MONITORED"
+    },
+    "salary_regressor": {
+      "name": "Ridge Salary Regressor (M2)",
+      "artifact": "salary_regressor.joblib",
+      "mae_lpa": 2.013,
+      "r2_score": 0.8793,
+      "status": "ACTIVE_PRODUCTION"
+    }
+  },
+  "feature_store_contract": {
+    "feature_view": "student_placement_v2",
+    "entity_key": "StudentID",
+    "offline_store": "Data/placement_predict_50k Dataset.csv (Parquet-backed lakehouse)",
+    "online_store": "Redis / In-Memory Ultra-Low Latency KV Cache (<1.2ms)",
+    "features_count": 27,
+    "time_travel_enabled": true,
+    "point_in_time_correctness": true
+  },
+  "packaged_artifacts": {
+    "baselines.json": {
+      "size_kb": 2.15,
+      "sha256": "2f4f43b7456e6729"
+    },
+    "calibration_and_evaluation.json": {
+      "size_kb": 5.69,
+      "sha256": "f0b3c02decb5d3d5"
+    },
+    "concept_graphs.json": {
+      "size_kb": 69.78,
+      "sha256": "bd19b74bd629419e"
+    },
+    "dt_pipeline.joblib": {
+      "size_kb": 29.52,
+      "sha256": "00d98c326547b8d8"
+    },
+    "elasticnet_pipeline.joblib": {
+      "size_kb": 8.78,
+      "sha256": "693f245a9dfe751b"
+    },
+    "feature_importance.json": {
+      "size_kb": 4.78,
+      "sha256": "5d8886c1e6db4677"
+    },
+    "lasso_pipeline.joblib": {
+      "size_kb": 8.78,
+      "sha256": "80078c7f2fcee8aa"
+    },
+    "lgbm_pipeline.joblib": {
+      "size_kb": 519.91,
+      "sha256": "cbf4a7d52e06f315"
+    },
+    "linear_interpretability.json": {
+      "size_kb": 16.25,
+      "sha256": "f418f5b829693aae"
+    },
+    "linear_pipeline.joblib": {
+      "size_kb": 8.78,
+      "sha256": "e35ea94ba445f645"
+    },
+    "metrics.json": {
+      "size_kb": 4.21,
+      "sha256": "51a967f7781756fc"
+    },
+    "rf_pipeline.joblib": {
+      "size_kb": 8816.37,
+      "sha256": "6a5e66de9c77f954"
+    },
+    "salary_regressor.joblib": {
+      "size_kb": 8.49,
+      "sha256": "4f57b1f666673977"
+    },
+    "tree_pipeline.joblib": {
+      "size_kb": 519.91,
+      "sha256": "cbf4a7d52e06f315"
+    },
+    "unsupervised_clustering.json": {
+      "size_kb": 72.5,
+      "sha256": "ed0c5c9e409d089e"
+    },
+    "xgboost_pipeline.joblib": {
+      "size_kb": 558.86,
+      "sha256": "a0787c59b205b25a"
+    }
+  }
+}

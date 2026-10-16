@@ -8,8 +8,18 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
-    <!-- Local Chart.js for 100% offline & fast rendering -->
+    <!-- Local Chart.js with CDN fallback for 100% reliable rendering -->
     <script src="/static/chart.js"></script>
+    <script>
+        if (typeof Chart === 'undefined') {
+            document.write('<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"><\/script>');
+        }
+    </script>
+    {% if concept_graphs %}
+    <script>
+        window.EMBEDDED_GRAPH_DATA = {{ concept_graphs | tojson | safe }};
+    </script>
+    {% endif %}
 </head>
 <body>
     <div class="app-layout">
@@ -22,14 +32,14 @@
                     <span class="badge-tag">Visual ML Graphs</span>
                 </div>
             </div>
-            <p class="sidebar-desc">Complete Visualizations for M1 (Lifecycle), M2 (Linear Models), and M3 (Tree Ensembles).</p>
+            <p class="sidebar-desc">Complete Visualizations for M1 (Lifecycle), M2 (Linear Models), M3 (Tree Ensembles), M4 (Unsupervised), M5 (Calibration & Eval), and M6 (Production MLOps).</p>
 
             <div class="sidebar-nav-heading">DASHBOARD NAVIGATION</div>
             <nav class="nav-tabs-vertical">
                 <button class="tab-btn active" onclick="switchTab('graphs')">
                     <span class="tab-icon">📈</span>
-                    <span class="tab-label">Concept Graphs (M1, M2, M3)</span>
-                    <span class="tab-badge">20</span>
+                    <span class="tab-label">Concept Graphs (M1 - M6)</span>
+                    <span class="tab-badge">42</span>
                 </button>
                 <button class="tab-btn" onclick="switchTab('dataset')">
                     <span class="tab-icon">📁</span>
@@ -67,17 +77,20 @@
 
         <!-- Main Content Area -->
         <main class="main-content">
-            <!-- TAB 1: VISUAL CONCEPT GRAPHS (M1, M2, M3) -->
+            <!-- TAB 1: VISUAL CONCEPT GRAPHS (M1 to M6) -->
             <section id="tab-graphs" class="tab-pane active">
                 <!-- Concept Filter Toolbar -->
                 <div class="card" style="margin-bottom: 20px; padding: 14px 20px;">
                     <div class="card-header" style="margin-bottom: 0; padding-bottom: 0; border-bottom: none; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
                         <span class="persona-label">Select Module Filter:</span>
                         <div class="graph-filter-chips">
-                            <button class="filter-chip active" onclick="filterGraphCards('all')">All Concept Graphs (20)</button>
-                            <button class="filter-chip" onclick="filterGraphCards('m1')">M1: ML System Lifecycle (4)</button>
-                            <button class="filter-chip" onclick="filterGraphCards('m2')">M2: Linear Models at Depth (7)</button>
-                            <button class="filter-chip" onclick="filterGraphCards('m3')">M3: Tree-Based Models (9)</button>
+                            <button class="filter-chip active" onclick="filterGraphCards('all', this)">All Concept Graphs (42)</button>
+                            <button class="filter-chip" onclick="filterGraphCards('m1', this)">M1: Lifecycle (4)</button>
+                            <button class="filter-chip" onclick="filterGraphCards('m2', this)">M2: Linear Models (7)</button>
+                            <button class="filter-chip" onclick="filterGraphCards('m3', this)">M3: Tree Ensembles (9)</button>
+                            <button class="filter-chip" onclick="filterGraphCards('m4', this)">M4: Unsupervised (8)</button>
+                            <button class="filter-chip" onclick="filterGraphCards('m5', this)">M5: Calibration & Eval (8)</button>
+                            <button class="filter-chip" onclick="filterGraphCards('m6', this)">M6: Production MLOps (6)</button>
                         </div>
                     </div>
                 </div>
@@ -372,6 +385,326 @@
                         </div>
                         <div class="canvas-container">
                             <canvas id="chartM3Tabular"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- ========================================== -->
+                    <!-- SECTION M4: UNSUPERVISED LEARNING GRAPHS   -->
+                    <!-- ========================================== -->
+
+                    <!-- Graph 21: K-Means Elbow & Silhouette -->
+                    <div class="card graph-card" data-cat="m4">
+                        <div class="graph-card-header">
+                            <div>
+                                <h4>21. K-Means: Elbow Method (WCSS) & Silhouette Scores</h4>
+                                <span class="badge-module m4">M4 Clustering</span>
+                            </div>
+                            <span class="graph-badge">Optimal K = 4</span>
+                        </div>
+                        <div class="canvas-container">
+                            <canvas id="chartM4Elbow"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Graph 22: PCA Scree Plot -->
+                    <div class="card graph-card" data-cat="m4">
+                        <div class="graph-card-header">
+                            <div>
+                                <h4>22. PCA Scree Plot: Explained & Cumulative Variance</h4>
+                                <span class="badge-module m4">M4 Dim Reduction</span>
+                            </div>
+                            <span class="graph-badge">Eigenvalues</span>
+                        </div>
+                        <div class="canvas-container">
+                            <canvas id="chartM4PcaScree"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Graph 23: Standardized vs Unstandardized PCA -->
+                    <div class="card graph-card" data-cat="m4">
+                        <div class="graph-card-header">
+                            <div>
+                                <h4>23. PCA Pitfall: Standardized vs Unscaled Features</h4>
+                                <span class="badge-module m4">M4 Scaling Pitfall</span>
+                            </div>
+                            <span class="graph-badge">Variance Skew</span>
+                        </div>
+                        <div class="canvas-container">
+                            <canvas id="chartM4PcaPitfall"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Graph 24: 2D Manifold Projection -->
+                    <div class="card graph-card" data-cat="m4">
+                        <div class="graph-card-header">
+                            <div>
+                                <h4>24. 2D Manifold Projection: Placed vs Unplaced Clusters</h4>
+                                <span class="badge-module m4">M4 Visualization</span>
+                            </div>
+                            <span class="graph-badge">t-SNE / PCA Space</span>
+                        </div>
+                        <div class="canvas-container">
+                            <canvas id="chartM4Tsne"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Graph 25: Hierarchical Linkage Comparison -->
+                    <div class="card graph-card" data-cat="m4">
+                        <div class="graph-card-header">
+                            <div>
+                                <h4>25. Hierarchical Clustering: Linkage Criteria</h4>
+                                <span class="badge-module m4">M4 Agglomerative</span>
+                            </div>
+                            <span class="graph-badge">Ward vs Complete</span>
+                        </div>
+                        <div class="canvas-container">
+                            <canvas id="chartM4Dendrogram"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Graph 26: DBSCAN Density & Outliers -->
+                    <div class="card graph-card" data-cat="m4">
+                        <div class="graph-card-header">
+                            <div>
+                                <h4>26. DBSCAN: Core Points & Noise Isolation (eps, minPts)</h4>
+                                <span class="badge-module m4">M4 Density</span>
+                            </div>
+                            <span class="graph-badge">Non-Convex Clusters</span>
+                        </div>
+                        <div class="canvas-container">
+                            <canvas id="chartM4Dbscan"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Graph 27: Isolation Forest Anomaly Distribution -->
+                    <div class="card graph-card" data-cat="m4">
+                        <div class="graph-card-header">
+                            <div>
+                                <h4>27. Isolation Forest: Anomaly Score Distribution</h4>
+                                <span class="badge-module m4">M4 Anomaly Detect</span>
+                            </div>
+                            <span class="graph-badge">Path Length Splits</span>
+                        </div>
+                        <div class="canvas-container">
+                            <canvas id="chartM4IsolationForest"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Graph 28: Student Persona Archetypes Profiles -->
+                    <div class="card graph-card" data-cat="m4">
+                        <div class="graph-card-header">
+                            <div>
+                                <h4>28. Student Persona Archetypes: Centroid Profiles</h4>
+                                <span class="badge-module m4">M4 Personas</span>
+                            </div>
+                            <span class="graph-badge">K=4 Archetypes</span>
+                        </div>
+                        <div class="canvas-container">
+                            <canvas id="chartM4Personas"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- ==================================================== -->
+                    <!-- SECTION M5: EVALUATION, SELECTION & CALIBRATION      -->
+                    <!-- ==================================================== -->
+
+                    <!-- Graph 29: Probability Calibration Reliability Diagram -->
+                    <div class="card graph-card" data-cat="m5">
+                        <div class="graph-card-header">
+                            <div>
+                                <h4>29. Probability Calibration: Reliability Diagram</h4>
+                                <span class="badge-module m5">M5 Calibration</span>
+                            </div>
+                            <span class="graph-badge">Platt vs Isotonic</span>
+                        </div>
+                        <div class="canvas-container">
+                            <canvas id="chartM5Reliability"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Graph 30: Stratified 5-Fold vs Nested CV -->
+                    <div class="card graph-card" data-cat="m5">
+                        <div class="graph-card-header">
+                            <div>
+                                <h4>30. Cross-Validation: Stratified 5-Fold vs Nested CV</h4>
+                                <span class="badge-module m5">M5 Resampling</span>
+                            </div>
+                            <span class="graph-badge">Generalization</span>
+                        </div>
+                        <div class="canvas-container">
+                            <canvas id="chartM5CvFolds"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Graph 31: Threshold Tuning Curve -->
+                    <div class="card graph-card" data-cat="m5">
+                        <div class="graph-card-header">
+                            <div>
+                                <h4>31. Decision Threshold Tuning (Precision vs Recall vs F1)</h4>
+                                <span class="badge-module m5">M5 Tuning</span>
+                            </div>
+                            <span class="graph-badge">Optimal Threshold</span>
+                        </div>
+                        <div class="canvas-container">
+                            <canvas id="chartM5Threshold"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Graph 32: Regression Error Penalties -->
+                    <div class="card graph-card" data-cat="m5">
+                        <div class="graph-card-header">
+                            <div>
+                                <h4>32. Regression Loss: RMSE (L2) vs MAE (L1) Outlier Penalty</h4>
+                                <span class="badge-module m5">M5 Regression</span>
+                            </div>
+                            <span class="graph-badge">Sensitivity Curve</span>
+                        </div>
+                        <div class="canvas-container">
+                            <canvas id="chartM5LossPenalty"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Graph 33: Learning Curve -->
+                    <div class="card graph-card" data-cat="m5">
+                        <div class="graph-card-header">
+                            <div>
+                                <h4>33. Learning Curve: Diagnosing Bias vs Variance</h4>
+                                <span class="badge-module m5">M5 Diagnostics</span>
+                            </div>
+                            <span class="graph-badge">1k to 35k Samples</span>
+                        </div>
+                        <div class="canvas-container">
+                            <canvas id="chartM5LearningCurve"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Graph 34: Validation Curve -->
+                    <div class="card graph-card" data-cat="m5">
+                        <div class="graph-card-header">
+                            <div>
+                                <h4>34. Validation Curve: Model Capacity (Tree Max-Depth)</h4>
+                                <span class="badge-module m5">M5 Capacity</span>
+                            </div>
+                            <span class="graph-badge">Under vs Overfitting</span>
+                        </div>
+                        <div class="canvas-container">
+                            <canvas id="chartM5ValidationCurve"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Graph 35: Hyperparameter Search Efficiency -->
+                    <div class="card graph-card" data-cat="m5">
+                        <div class="graph-card-header">
+                            <div>
+                                <h4>35. Search Strategy: Grid vs Random vs Bayesian Opt</h4>
+                                <span class="badge-module m5">M5 Optimization</span>
+                            </div>
+                            <span class="graph-badge">Bergstra-Bengio</span>
+                        </div>
+                        <div class="canvas-container">
+                            <canvas id="chartM5Hyperparam"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Graph 36: McNemar's Test Contingency -->
+                    <div class="card graph-card" data-cat="m5">
+                        <div class="graph-card-header">
+                            <div>
+                                <h4>36. McNemar's Hypothesis Test: Classifier Significance</h4>
+                                <span class="badge-module m5">M5 Hypothesis Test</span>
+                            </div>
+                            <span class="graph-badge">2x2 Contingency</span>
+                        </div>
+                        <div class="canvas-container">
+                            <canvas id="chartM5McNemar"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- ==================================================== -->
+                    <!-- SECTION M6: ML ENGINEERING & PRODUCTION MLOPS        -->
+                    <!-- ==================================================== -->
+
+                    <!-- Graph 37: Production Latency SLAs -->
+                    <div class="card graph-card" data-cat="m6">
+                        <div class="graph-card-header">
+                            <div>
+                                <h4>37. Production Latency SLAs: P50, P95, P99 vs Batch Size</h4>
+                                <span class="badge-module m6">M6 Serving SLAs</span>
+                            </div>
+                            <span class="graph-badge">FastAPI Telemetry</span>
+                        </div>
+                        <div class="canvas-container">
+                            <canvas id="chartM6LatencySla"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Graph 38: Population Stability Index (PSI) & KS Drift -->
+                    <div class="card graph-card" data-cat="m6">
+                        <div class="graph-card-header">
+                            <div>
+                                <h4>38. Feature Drift Monitoring: PSI & KS Statistics</h4>
+                                <span class="badge-module m6">M6 Data Drift</span>
+                            </div>
+                            <span class="graph-badge">Baseline vs Live</span>
+                        </div>
+                        <div class="canvas-container">
+                            <canvas id="chartM6FeatureDrift"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Graph 39: Feature Store Parity -->
+                    <div class="card graph-card" data-cat="m6">
+                        <div class="graph-card-header">
+                            <div>
+                                <h4>39. Feature Store Parity: Offline vs Online Distribution</h4>
+                                <span class="badge-module m6">M6 Feature Store</span>
+                            </div>
+                            <span class="graph-badge">Skew Elimination</span>
+                        </div>
+                        <div class="canvas-container">
+                            <canvas id="chartM6FeatureStore"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Graph 40: Retraining Trigger Lifecycle -->
+                    <div class="card graph-card" data-cat="m6">
+                        <div class="graph-card-header">
+                            <div>
+                                <h4>40. Autonomous Retraining: Degradation & Recovery Loop</h4>
+                                <span class="badge-module m6">M6 Retraining</span>
+                            </div>
+                            <span class="graph-badge">Champion vs Challenger</span>
+                        </div>
+                        <div class="canvas-container">
+                            <canvas id="chartM6Retraining"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Graph 41: Serialization Packaging Benchmark -->
+                    <div class="card graph-card" data-cat="m6">
+                        <div class="graph-card-header">
+                            <div>
+                                <h4>41. Model Packaging: Joblib vs ONNX Runtime Benchmark</h4>
+                                <span class="badge-module m6">M6 Packaging</span>
+                            </div>
+                            <span class="graph-badge">Latency & Size</span>
+                        </div>
+                        <div class="canvas-container">
+                            <canvas id="chartM6Packaging"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Graph 42: Model Registry Progression -->
+                    <div class="card graph-card" data-cat="m6">
+                        <div class="graph-card-header">
+                            <div>
+                                <h4>42. Model Registry Progression: Versioned F1 Scores</h4>
+                                <span class="badge-module m6">M6 MLOps Registry</span>
+                            </div>
+                            <span class="graph-badge">v1.0 to v2.4</span>
+                        </div>
+                        <div class="canvas-container">
+                            <canvas id="chartM6Registry"></canvas>
                         </div>
                     </div>
                 </div>

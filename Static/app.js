@@ -11,24 +11,27 @@ let CURRENT_DATASET_PAGE = 1;
 let TOTAL_DATASET_PAGES = 1;
 let DATASET_LOADED = false;
 
-document.addEventListener('DOMContentLoaded', async () => {
+function initApp() {
     // 1. Initial fetch of presets
-    try {
-        const res = await fetch('/api/presets');
-        if (res.ok) {
-            PRESETS = await res.json();
-        }
-    } catch (e) {
-        console.warn("Could not fetch presets:", e);
-    }
+    fetch('/api/presets')
+        .then(res => res.ok ? res.json() : {})
+        .then(data => { PRESETS = data; })
+        .catch(e => console.warn("Could not fetch presets:", e));
 
-    // 2. Load and render all 20 visual graphs immediately
+    // 2. Load and render all 42 visual graphs immediately
     loadConceptGraphs();
 
     // 3. Telemetry & initial prediction setup
     fetchMonitoringStats();
     setInterval(fetchMonitoringStats, 10000);
-});
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initApp);
+} else {
+    // DOM is already parsed (interactive or complete), run immediately
+    initApp();
+}
 
 function switchTab(tabId) {
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -155,9 +158,13 @@ function changeDatasetPage(delta) {
     }
 }
 
-function filterGraphCards(category) {
+function filterGraphCards(category, btnElement) {
     document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
-    if (event && event.target) event.target.classList.add('active');
+    if (btnElement) {
+        btnElement.classList.add('active');
+    } else if (typeof event !== 'undefined' && event && event.target) {
+        event.target.classList.add('active');
+    }
 
     document.querySelectorAll('.graph-card').forEach(card => {
         if (category === 'all' || card.getAttribute('data-cat') === category) {
@@ -167,9 +174,15 @@ function filterGraphCards(category) {
         }
     });
 
-    setTimeout(() => {
-        Object.values(CHART_INSTANCES).forEach(c => c && c.resize && c.resize());
-    }, 50);
+    setTimeout(resizeAllCharts, 60);
+}
+
+function resizeAllCharts() {
+    Object.values(CHART_INSTANCES).forEach(c => {
+        if (c && typeof c.resize === 'function') {
+            try { c.resize(); } catch (e) {}
+        }
+    });
 }
 
 function syncRange(id) {
@@ -278,7 +291,11 @@ function updatePredictionUI(res) {
     const probBar = document.getElementById('probBar');
     const latencyBadge = document.getElementById('latencyBadge');
 
-    if (latencyBadge) latencyBadge.innerText = `Latency: ${res.inference_latency_ms} ms (${res.model_used})`;
+    if (latencyBadge) {
+        const personaText = pred.student_persona ? ` | 🏷️ Persona: ${pred.student_persona.name}` : '';
+        const calText = pred.calibrated_probability_pct ? ` | ⚖️ Platt Calibrated: ${pred.calibrated_probability_pct}%` : '';
+        latencyBadge.innerText = `Latency: ${res.inference_latency_ms} ms (${res.model_used})${calText}${personaText}`;
+    }
     if (probValue) probValue.innerText = `${probPct}%`;
     if (probBar) probBar.style.width = `${Math.min(Math.max(probPct, 2), 100)}%`;
 
@@ -469,21 +486,37 @@ function safeCreateChart(canvasId, config) {
 }
 
 async function loadConceptGraphs() {
-    try {
-        const res = await fetch('/api/graphs');
-        if (!res.ok) return;
-        GRAPH_DATA = await res.json();
-        GRAPHS_LOADED = true;
+    // 1. Check if embedded data is available from template
+    if (typeof window !== 'undefined' && window.EMBEDDED_GRAPH_DATA && Object.keys(window.EMBEDDED_GRAPH_DATA).length > 0) {
+        GRAPH_DATA = window.EMBEDDED_GRAPH_DATA;
+    }
 
-        if (typeof Chart === 'undefined') {
-            console.warn("Chart.js not yet loaded, retrying in 200ms...");
-            setTimeout(loadConceptGraphs, 200);
-            return;
+    // 2. Fallback to API if not already loaded
+    if (!GRAPH_DATA) {
+        try {
+            const res = await fetch('/api/graphs');
+            if (res.ok) {
+                GRAPH_DATA = await res.json();
+            }
+        } catch (e) {
+            console.error("Failed to load concept graphs from API:", e);
         }
+    }
 
+    if (!GRAPH_DATA) return;
+
+    if (typeof Chart === 'undefined') {
+        console.warn("Chart.js not yet loaded, retrying in 100ms...");
+        setTimeout(loadConceptGraphs, 100);
+        return;
+    }
+
+    try {
         renderAll20ConceptCharts(GRAPH_DATA);
+        GRAPHS_LOADED = true;
+        setTimeout(resizeAllCharts, 60);
     } catch (e) {
-        console.error("Failed to load concept graphs:", e);
+        console.error("Error rendering concept charts:", e);
     }
 }
 
@@ -905,6 +938,517 @@ function renderAll20ConceptCharts(data) {
                         pointLabels: { color: '#334155', font: { size: 10, weight: '600' } },
                         ticks: { backdropColor: 'transparent', color: '#64748b' }
                     }
+                }
+            }
+        });
+    }
+
+    // =========================================================================
+    // SECTION M4: UNSUPERVISED LEARNING CHARTS (CHARTS 21 TO 28)
+    // =========================================================================
+
+    // 21. K-Means Elbow & Silhouette
+    if (data.kmeans_elbow_silhouette) {
+        const km = data.kmeans_elbow_silhouette;
+        safeCreateChart('chartM4Elbow', {
+            type: 'line',
+            data: {
+                labels: km.k_values.map(k => `K=${k}`),
+                datasets: [
+                    {
+                        label: 'WCSS / Inertia (Elbow)',
+                        data: km.wcss_inertia,
+                        borderColor: '#6366f1',
+                        backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                        borderWidth: 2.5,
+                        yAxisID: 'y',
+                        pointRadius: 4
+                    },
+                    {
+                        label: 'Silhouette Score',
+                        data: km.silhouette_scores,
+                        borderColor: '#10b981',
+                        borderWidth: 2.5,
+                        yAxisID: 'y1',
+                        pointRadius: 4
+                    }
+                ]
+            },
+            options: {
+                ...getChartDefaultOptions('Clusters (K)', 'Inertia (WCSS)'),
+                scales: {
+                    x: { grid: { color: 'rgba(0, 0, 0, 0.05)' }, ticks: { color: '#64748b' } },
+                    y: { position: 'left', grid: { color: 'rgba(0, 0, 0, 0.05)' }, ticks: { color: '#6366f1' }, title: { display: true, text: 'Inertia (WCSS)', color: '#6366f1' } },
+                    y1: { position: 'right', grid: { drawOnChartArea: false }, ticks: { color: '#10b981' }, title: { display: true, text: 'Silhouette Score', color: '#10b981' } }
+                }
+            }
+        });
+    }
+
+    // 22. PCA Scree Plot
+    if (data.pca_scree) {
+        const ps = data.pca_scree;
+        safeCreateChart('chartM4PcaScree', {
+            type: 'bar',
+            data: {
+                labels: ps.components,
+                datasets: [
+                    {
+                        type: 'line',
+                        label: 'Cumulative Variance (%)',
+                        data: ps.cumulative_variance,
+                        borderColor: '#0284c7',
+                        borderWidth: 2.5,
+                        yAxisID: 'y1',
+                        pointRadius: 4
+                    },
+                    {
+                        type: 'bar',
+                        label: 'Explained Variance (%)',
+                        data: ps.explained_variance,
+                        backgroundColor: '#818cf8',
+                        yAxisID: 'y'
+                    }
+                ]
+            },
+            options: {
+                ...getChartDefaultOptions('Principal Component', 'Variance (%)'),
+                scales: {
+                    x: { grid: { color: 'rgba(0, 0, 0, 0.05)' } },
+                    y: { position: 'left', title: { display: true, text: 'Component Var (%)' } },
+                    y1: { position: 'right', max: 100, grid: { drawOnChartArea: false }, title: { display: true, text: 'Cumulative (%)' } }
+                }
+            }
+        });
+    }
+
+    // 23. Standardized vs Unstandardized PCA
+    if (data.pca_standardization_pitfall) {
+        const pf = data.pca_standardization_pitfall;
+        safeCreateChart('chartM4PcaPitfall', {
+            type: 'bar',
+            data: {
+                labels: pf.components,
+                datasets: [
+                    { label: 'Standardized (Production Best Practice)', data: pf.standardized_var, backgroundColor: '#10b981' },
+                    { label: 'Unstandardized (Pitfall: CodingScale Skew)', data: pf.unstandardized_var, backgroundColor: '#ef4444' }
+                ]
+            },
+            options: getChartDefaultOptions('Principal Component', 'Variance Explained (%)')
+        });
+    }
+
+    // 24. 2D Manifold Projection
+    if (data.pca_tsne_projection) {
+        const tp = data.pca_tsne_projection;
+        safeCreateChart('chartM4Tsne', {
+            type: 'scatter',
+            data: {
+                datasets: [
+                    {
+                        label: 'Placed Students (Cluster)',
+                        data: tp.placed_points,
+                        backgroundColor: 'rgba(16, 185, 129, 0.65)',
+                        pointRadius: 4
+                    },
+                    {
+                        label: 'Unplaced Students (Cluster)',
+                        data: tp.unplaced_points,
+                        backgroundColor: 'rgba(239, 68, 68, 0.65)',
+                        pointRadius: 4
+                    }
+                ]
+            },
+            options: getChartDefaultOptions('Projection Dimension 1 (PC1)', 'Projection Dimension 2 (PC2)')
+        });
+    }
+
+    // 25. Hierarchical Clustering Linkage
+    if (data.dendrogram_linkage) {
+        const dg = data.dendrogram_linkage;
+        safeCreateChart('chartM4Dendrogram', {
+            type: 'bar',
+            data: {
+                labels: dg.linkage_methods,
+                datasets: [
+                    { label: 'Cluster Compactness Score', data: dg.cluster_compactness, backgroundColor: '#3b82f6' },
+                    { label: 'Outlier Chaining Risk (%)', data: dg.outlier_chaining_risk, backgroundColor: '#f97316' }
+                ]
+            },
+            options: getChartDefaultOptions('Linkage Criteria', 'Metric Score (0-100)')
+        });
+    }
+
+    // 26. DBSCAN Density & Outliers
+    if (data.dbscan_density) {
+        const db = data.dbscan_density;
+        safeCreateChart('chartM4Dbscan', {
+            type: 'scatter',
+            data: {
+                datasets: [
+                    {
+                        label: 'Dense Core Points (Clusters)',
+                        data: db.core_cluster_points,
+                        backgroundColor: '#3b82f6',
+                        pointRadius: 4
+                    },
+                    {
+                        label: 'DBSCAN Noise Outliers (label = -1)',
+                        data: db.noise_outlier_points,
+                        backgroundColor: '#ef4444',
+                        pointRadius: 6,
+                        pointStyle: 'triangle'
+                    }
+                ]
+            },
+            options: getChartDefaultOptions('Spatial Dimension X', 'Spatial Dimension Y')
+        });
+    }
+
+    // 27. Isolation Forest Anomaly Scores
+    if (data.isolation_forest) {
+        const iso = data.isolation_forest;
+        safeCreateChart('chartM4IsolationForest', {
+            type: 'bar',
+            data: {
+                labels: iso.score_bins,
+                datasets: [{
+                    label: 'Sample Frequency (Anomalies on Left)',
+                    data: iso.frequency,
+                    backgroundColor: iso.score_bins.map((_, i) => i < 3 ? '#ef4444' : '#6366f1')
+                }]
+            },
+            options: getChartDefaultOptions('Anomaly Score Range (Lower = More Abnormal)', 'Student Count')
+        });
+    }
+
+    // 28. Student Persona Archetypes Profile
+    if (data.persona_archetypes) {
+        const pa = data.persona_archetypes;
+        safeCreateChart('chartM4Personas', {
+            type: 'radar',
+            data: {
+                labels: ['CGPA Score (%)', 'Coding Score', 'Soft Skills (%)', 'Internships (%)'],
+                datasets: [
+                    { label: pa.personas[0] || 'Elite All-Rounders', data: [pa.cgpa_pct[0], pa.coding_score[0], pa.soft_skills_pct[0], pa.internships_pct[0]], borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.15)' },
+                    { label: pa.personas[1] || 'Tech Specialists', data: [pa.cgpa_pct[1], pa.coding_score[1], pa.soft_skills_pct[1], pa.internships_pct[1]], borderColor: '#6366f1', backgroundColor: 'rgba(99, 102, 241, 0.15)' },
+                    { label: pa.personas[2] || 'Core Academics', data: [pa.cgpa_pct[2], pa.coding_score[2], pa.soft_skills_pct[2], pa.internships_pct[2]], borderColor: '#f59e0b', backgroundColor: 'rgba(245, 158, 11, 0.15)' },
+                    { label: pa.personas[3] || 'At-Risk / Needs Skills', data: [pa.cgpa_pct[3], pa.coding_score[3], pa.soft_skills_pct[3], pa.internships_pct[3]], borderColor: '#ef4444', backgroundColor: 'rgba(239, 68, 68, 0.15)' }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { labels: { color: '#334155', font: { size: 10, weight: '600' } } } },
+                scales: { r: { max: 100, ticks: { backdropColor: 'transparent', color: '#64748b' } } }
+            }
+        });
+    }
+
+    // =========================================================================
+    // SECTION M5: EVALUATION, SELECTION & CALIBRATION (CHARTS 29 TO 36)
+    // =========================================================================
+
+    // 29. Probability Calibration Reliability Diagram
+    if (data.reliability_diagram) {
+        const rd = data.reliability_diagram;
+        safeCreateChart('chartM5Reliability', {
+            type: 'line',
+            data: {
+                datasets: [
+                    {
+                        label: 'Perfect Calibration (Ideal)',
+                        data: rd.diagonal,
+                        borderColor: '#94a3b8',
+                        borderDash: [5, 5],
+                        borderWidth: 2,
+                        pointRadius: 0
+                    },
+                    {
+                        label: 'Uncalibrated Model',
+                        data: rd.uncalibrated,
+                        borderColor: '#ef4444',
+                        borderWidth: 2.5,
+                        pointRadius: 4
+                    },
+                    {
+                        label: 'Platt Sigmoid Calibrated',
+                        data: rd.platt_sigmoid,
+                        borderColor: '#10b981',
+                        borderWidth: 2.5,
+                        pointRadius: 4
+                    },
+                    {
+                        label: 'Isotonic Regression Calibrated',
+                        data: rd.isotonic,
+                        borderColor: '#6366f1',
+                        borderWidth: 2.5,
+                        pointRadius: 4
+                    }
+                ]
+            },
+            options: {
+                ...getChartDefaultOptions('Mean Predicted Probability', 'Empirical Fraction of Positives'),
+                scales: {
+                    x: { type: 'linear', min: 0.0, max: 1.0, title: { display: true, text: 'Predicted Probability' } },
+                    y: { min: 0.0, max: 1.0, title: { display: true, text: 'Observed Placement Probability' } }
+                }
+            }
+        });
+    }
+
+    // 30. Stratified 5-Fold vs Nested CV
+    if (data.cv_comparison) {
+        const cv = data.cv_comparison;
+        safeCreateChart('chartM5CvFolds', {
+            type: 'bar',
+            data: {
+                labels: cv.folds,
+                datasets: [
+                    { label: 'Stratified 5-Fold CV (%)', data: cv.stratified_cv, backgroundColor: '#3b82f6' },
+                    { label: 'Nested CV Holdout (%)', data: cv.nested_cv, backgroundColor: '#8b5cf6' }
+                ]
+            },
+            options: {
+                ...getChartDefaultOptions('Validation Split Fold', 'Accuracy (%)'),
+                scales: { y: { min: 85, max: 96 } }
+            }
+        });
+    }
+
+    // 31. Decision Threshold Tuning
+    if (data.threshold_tuning) {
+        const tt = data.threshold_tuning;
+        safeCreateChart('chartM5Threshold', {
+            type: 'line',
+            data: {
+                labels: tt.thresholds.map(t => t.toFixed(2)),
+                datasets: [
+                    { label: 'F1-Score (%)', data: tt.f1s || tt.f1_scores, borderColor: '#10b981', borderWidth: 3, pointRadius: 2 },
+                    { label: 'Precision (%)', data: tt.precisions, borderColor: '#3b82f6', borderWidth: 2, pointRadius: 1 },
+                    { label: 'Recall (%)', data: tt.recalls, borderColor: '#f59e0b', borderWidth: 2, pointRadius: 1 }
+                ]
+            },
+            options: getChartDefaultOptions('Classification Threshold (0 to 1)', 'Metric Score (%)')
+        });
+    }
+
+    // 32. Regression Error Penalties: RMSE vs MAE
+    if (data.regression_loss_penalty) {
+        const rp = data.regression_loss_penalty;
+        safeCreateChart('chartM5LossPenalty', {
+            type: 'line',
+            data: {
+                labels: rp.error_lpa.map(e => `${e}L`),
+                datasets: [
+                    { label: 'RMSE / MSE Penalty (L2 Quadratic: e^2)', data: rp.rmse_l2_penalty, borderColor: '#ef4444', borderWidth: 2.5, pointRadius: 0 },
+                    { label: 'MAE Penalty (L1 Linear: |e|)', data: rp.mae_l1_penalty, borderColor: '#3b82f6', borderWidth: 2.5, pointRadius: 0 }
+                ]
+            },
+            options: getChartDefaultOptions('Salary Prediction Error (₹ LPA)', 'Loss Function Penalty')
+        });
+    }
+
+    // 33. Learning Curve (Diagnosing Bias vs Variance)
+    if (data.learning_curve) {
+        const lc = data.learning_curve;
+        safeCreateChart('chartM5LearningCurve', {
+            type: 'line',
+            data: {
+                labels: lc.sample_sizes,
+                datasets: [
+                    { label: 'Training Accuracy (%)', data: lc.training_accuracy, borderColor: '#ef4444', borderWidth: 2.5, pointRadius: 3 },
+                    { label: 'Validation Accuracy (%)', data: lc.validation_accuracy, borderColor: '#10b981', borderWidth: 2.5, pointRadius: 3 }
+                ]
+            },
+            options: {
+                ...getChartDefaultOptions('Training Set Size', 'Accuracy (%)'),
+                scales: { y: { min: 80, max: 100 } }
+            }
+        });
+    }
+
+    // 34. Validation Curve (Tree Depth Capacity)
+    if (data.validation_curve) {
+        const vc = data.validation_curve;
+        safeCreateChart('chartM5ValidationCurve', {
+            type: 'line',
+            data: {
+                labels: vc.max_depths.map(d => `Depth ${d}`),
+                datasets: [
+                    { label: 'Training Accuracy (%)', data: vc.train_accuracy, borderColor: '#ef4444', borderDash: [4, 4], borderWidth: 2, pointRadius: 2 },
+                    { label: 'Validation Generalization (%)', data: vc.val_accuracy, borderColor: '#10b981', borderWidth: 3, pointRadius: 3 }
+                ]
+            },
+            options: {
+                ...getChartDefaultOptions('Hyperparameter Capacity: Max Depth', 'Accuracy (%)'),
+                scales: { y: { min: 80, max: 100 } }
+            }
+        });
+    }
+
+    // 35. Hyperparameter Search Efficiency
+    if (data.hyperparameter_search) {
+        const hs = data.hyperparameter_search;
+        safeCreateChart('chartM5Hyperparam', {
+            type: 'line',
+            data: {
+                labels: hs.iterations.map(i => `${i} Iters`),
+                datasets: [
+                    { label: 'Bayesian Optimization (GP Surrogate)', data: hs.bayesian_optimization, borderColor: '#10b981', borderWidth: 2.5, pointRadius: 3 },
+                    { label: 'Random Search (Bergstra-Bengio)', data: hs.random_search_bergstra, borderColor: '#3b82f6', borderWidth: 2.5, pointRadius: 3 },
+                    { label: 'Grid Search (Combinatorial)', data: hs.grid_search, borderColor: '#94a3b8', borderWidth: 2, pointRadius: 2 }
+                ]
+            },
+            options: {
+                ...getChartDefaultOptions('Tuning Search Trials', 'Best Accuracy (%)'),
+                scales: { y: { min: 88, max: 93 } }
+            }
+        });
+    }
+
+    // 36. McNemar's Test 2x2 Contingency
+    if (data.mcnemar_contingency) {
+        const mc = data.mcnemar_contingency;
+        safeCreateChart('chartM5McNemar', {
+            type: 'bar',
+            data: {
+                labels: ['Both Correct', 'Ridge Only Correct', 'LightGBM Only Correct', 'Both Wrong'],
+                datasets: [{
+                    label: 'Test Samples Count',
+                    data: [mc.both_correct, mc.a_correct_b_wrong, mc.b_correct_a_wrong, mc.both_wrong],
+                    backgroundColor: ['#10b981', '#3b82f6', '#8b5cf6', '#ef4444']
+                }]
+            },
+            options: getChartDefaultOptions('Discordant Error Cells (2x2 Matrix)', 'Student Test Count')
+        });
+    }
+
+    // =========================================================================
+    // SECTION M6: ML ENGINEERING & PRODUCTION MLOPS (CHARTS 37 TO 42)
+    // =========================================================================
+
+    // 37. Production Latency SLAs
+    if (data.production_sla_latency) {
+        const sl = data.production_sla_latency;
+        safeCreateChart('chartM6LatencySla', {
+            type: 'line',
+            data: {
+                labels: sl.batch_sizes.map(b => `${b} Records`),
+                datasets: [
+                    { label: 'P99 Latency (ms)', data: sl.p99_latency_ms, borderColor: '#ef4444', borderWidth: 2, pointRadius: 3 },
+                    { label: 'P95 Latency (ms)', data: sl.p95_latency_ms, borderColor: '#f59e0b', borderWidth: 2.5, pointRadius: 3 },
+                    { label: 'P50 Median (ms)', data: sl.p50_latency_ms, borderColor: '#10b981', borderWidth: 2, pointRadius: 3 },
+                    { label: 'Target SLA Limit (25ms)', data: sl.p95_sla_target_ms, borderColor: '#94a3b8', borderDash: [5, 5], borderWidth: 1.5, pointRadius: 0 }
+                ]
+            },
+            options: getChartDefaultOptions('Batch Size Processed', 'Latency (Milliseconds)')
+        });
+    }
+
+    // 38. Population Stability Index (PSI) & KS Statistics
+    if (data.psi_ks_drift) {
+        const df = data.psi_ks_drift;
+        safeCreateChart('chartM6FeatureDrift', {
+            type: 'bar',
+            data: {
+                labels: df.features,
+                datasets: [
+                    { label: 'Population Stability Index (PSI)', data: df.psi_values, backgroundColor: '#3b82f6' },
+                    { label: 'Kolmogorov-Smirnov D-Stat', data: df.ks_statistics, backgroundColor: '#8b5cf6' }
+                ]
+            },
+            options: {
+                ...getChartDefaultOptions('Feature Monitored', 'Drift Metric Value'),
+                scales: { y: { min: 0.0, max: 0.28 } }
+            }
+        });
+    }
+
+    // 39. Feature Store Parity
+    if (data.feature_store_parity) {
+        const fp = data.feature_store_parity;
+        safeCreateChart('chartM6FeatureStore', {
+            type: 'bar',
+            data: {
+                labels: fp.bins,
+                datasets: [
+                    { label: 'Offline Store (Lakehouse Training)', data: fp.offline_store_pct, backgroundColor: '#0284c7' },
+                    { label: 'Online Store (Redis Low Latency)', data: fp.online_store_pct, backgroundColor: '#10b981' }
+                ]
+            },
+            options: getChartDefaultOptions('Feature Value Quantile', 'Distribution (%)')
+        });
+    }
+
+    // 40. Retraining Trigger Lifecycle
+    if (data.retraining_lifecycle) {
+        const rl = data.retraining_lifecycle;
+        safeCreateChart('chartM6Retraining', {
+            type: 'line',
+            data: {
+                labels: rl.timeline_days,
+                datasets: [
+                    { label: 'Production Accuracy (%)', data: rl.production_accuracy, borderColor: '#3b82f6', borderWidth: 2.5, pointRadius: 2 },
+                    { label: 'Drift Trigger Threshold (89.5%)', data: rl.trigger_threshold, borderColor: '#ef4444', borderDash: [4, 4], borderWidth: 2, pointRadius: 0 }
+                ]
+            },
+            options: {
+                ...getChartDefaultOptions('Production Deployment Days', 'Serving Accuracy (%)'),
+                scales: { y: { min: 88, max: 94 } }
+            }
+        });
+    }
+
+    // 41. Serialization Benchmark: Joblib vs ONNX Runtime
+    if (data.packaging_benchmark) {
+        const pb = data.packaging_benchmark;
+        safeCreateChart('chartM6Packaging', {
+            type: 'bar',
+            data: {
+                labels: pb.frameworks,
+                datasets: [
+                    { label: 'Single Inference Latency (ms)', data: pb.single_infer_latency_ms, backgroundColor: '#3b82f6' },
+                    { label: 'P95 Latency (ms)', data: pb.p95_latency_ms, backgroundColor: '#10b981' },
+                    { label: 'Artifact Disk Size (MB)', data: pb.artifact_size_mb, backgroundColor: '#f59e0b' }
+                ]
+            },
+            options: getChartDefaultOptions('Packaging Format', 'Latency (ms) / Size (MB)')
+        });
+    }
+
+    // 42. Model Registry Progression
+    if (data.registry_progression) {
+        const rp = data.registry_progression;
+        safeCreateChart('chartM6Registry', {
+            type: 'line',
+            data: {
+                labels: rp.versions,
+                datasets: [
+                    {
+                        type: 'line',
+                        label: 'Test F1-Score (%)',
+                        data: rp.test_f1_score,
+                        borderColor: '#10b981',
+                        borderWidth: 3,
+                        pointRadius: 5,
+                        yAxisID: 'y'
+                    },
+                    {
+                        type: 'bar',
+                        label: 'P95 Latency (ms)',
+                        data: rp.p95_latency_ms,
+                        backgroundColor: '#818cf8',
+                        yAxisID: 'y1'
+                    }
+                ]
+            },
+            options: {
+                ...getChartDefaultOptions('Model Version', 'F1-Score (%)'),
+                scales: {
+                    x: { grid: { color: 'rgba(0, 0, 0, 0.05)' } },
+                    y: { position: 'left', min: 90, max: 96, title: { display: true, text: 'F1-Score (%)' } },
+                    y1: { position: 'right', max: 15, grid: { drawOnChartArea: false }, title: { display: true, text: 'P95 Latency (ms)' } }
                 }
             }
         });
